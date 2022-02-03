@@ -11,7 +11,7 @@ showFullContent = false
 readingTime = false
 +++
 
-## Instalación
+## Instalación
 
 Para instalar el servicio, utilizaremos el siguiente comando:
 
