@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>dns on La web de Antonio</title><link>https://lordantonio99.github.io/hugo-terminal/tags/dns/</link><description>Recent content in dns on La web de Antonio</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Thu, 03 Feb 2022 13:16:32 +0100</lastBuildDate><atom:link href="https://lordantonio99.github.io/hugo-terminal/tags/dns/index.xml" rel="self" type="application/rss+xml"/><item><title>Trabajo de servidores DNS</title><link>https://lordantonio99.github.io/hugo-terminal/posts/servidordnsmasq/</link><pubDate>Thu, 03 Feb 2022 13:16:32 +0100</pubDate><guid>https://lordantonio99.github.io/hugo-terminal/posts/servidordnsmasq/</guid><description>Contenidos Servidor de DNS en Linux Configuración inicial Instalación del servicio Punto 1 A. Creación del una zona para el dominio B. Crear una zona de resolución inversa C. Nombres FQHN D. Servidor web y ftp Punto 2 A. Configuración de las zonas B. Reiniciar los servidores C. Modificar el numero de registro D. Transferencias completas: E. Consultas con dig F. Configura un cliente para que utilice los 2 servidores Punto 3 Instalación Servidor DNS Caché Servidor DNS maestro Servidor de DNS en Linux Configuración inicial PC Interfaz Red Dirección PC01 enp0s3 NAT 10.</description><content>&lt;h1 id="contenidos">Contenidos&lt;/h1>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>dns on La web de Antonio</title><link>https://lordantonio99.github.io/hugo-terminal/tags/dns/</link><description>Recent content in dns on La web de Antonio</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Thu, 03 Feb 2022 13:16:32 +0100</lastBuildDate><atom:link href="https://lordantonio99.github.io/hugo-terminal/tags/dns/index.xml" rel="self" type="application/rss+xml"/><item><title>Trabajo de servidores DNS</title><link>https://lordantonio99.github.io/hugo-terminal/posts/servidordnsmasq/</link><pubDate>Thu, 03 Feb 2022 13:16:32 +0100</pubDate><guid>https://lordantonio99.github.io/hugo-terminal/posts/servidordnsmasq/</guid><description>Contenidos Servidor de DNS en Linux Configuración inicial Instalación del servicio Punto 1 A. Creación del una zona para el dominio B. Crear una zona de resolución inversa C. Nombres FQHN D. Servidor web y ftp Punto 2 A. Configuración de las zonas B. Reiniciar los servidores C. Modificar el numero de registro D. Transferencias completas: E. Consultas con dig F. Configura un cliente para que utilice los 2 servidores Punto 3 Instalación Servidor DNS Caché Servidor DNS maestro Punto 4 Configuración DHCP en DNSMASQ Servidor de DNS en Linux Configuración inicial PC Interfaz Red Dirección PC01 enp0s3 NAT 10.</description><content>&lt;h1 id="contenidos">Contenidos&lt;/h1>
 &lt;ul>
 &lt;li>&lt;a href="#servidor-de-dns-en-linux">Servidor de DNS en Linux&lt;/a>
 &lt;ul>
@@ -25,10 +25,15 @@
 &lt;li>&lt;a href="#punto-3">Punto 3&lt;/a>
 &lt;ul>
 &lt;li>&lt;a href="#instalaci%C3%B3n">Instalación&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
 &lt;li>&lt;a href="#servidor-dns-cach%C3%A9">Servidor DNS Caché&lt;/a>&lt;/li>
 &lt;li>&lt;a href="#servidor-dns-maestro">Servidor DNS maestro&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#punto-4">Punto 4&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#configuraci%C3%B3n-dhcp-en-dnsmasq">Configuración DHCP en DNSMASQ&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>

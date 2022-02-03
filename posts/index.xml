@@ -234,7 +234,7 @@ Componentes de un servidor DHCP Sus componentes son:</description><content>&lt;h
 &lt;h1 id="protocolo-de-failover-en-dhcp">Protocolo de failover en DHCP&lt;/h1>
 &lt;p>Cuando 2 servidores DHCP se encuentran en la misma red, ambos mantienen una base de datos con sus concesiones y sus estados. Para evitar que la misma dirección Ip se asigne a varios equipos, la solución es que estos trabajen con distintos rangos de direcciones.&lt;/p>
 &lt;p>Si ambos servidores desean trabajar con el mismo rango de direcciones, es necesario que sus bases de datos estén sincronizadas. Para esto se utiliza el protocolo Failover entre 2 servidores DHCP.&lt;/p>
-&lt;p>Este protocolo también se puede utilizar para realizar un balanceo de carga, de manera que el trabajo se reparta entre los servidores primario y secundario.&lt;/p></content></item><item><title>Trabajo de servidores DNS</title><link>https://lordantonio99.github.io/hugo-terminal/posts/servidordnsmasq/</link><pubDate>Thu, 03 Feb 2022 13:16:32 +0100</pubDate><guid>https://lordantonio99.github.io/hugo-terminal/posts/servidordnsmasq/</guid><description>Contenidos Servidor de DNS en Linux Configuración inicial Instalación del servicio Punto 1 A. Creación del una zona para el dominio B. Crear una zona de resolución inversa C. Nombres FQHN D. Servidor web y ftp Punto 2 A. Configuración de las zonas B. Reiniciar los servidores C. Modificar el numero de registro D. Transferencias completas: E. Consultas con dig F. Configura un cliente para que utilice los 2 servidores Punto 3 Instalación Servidor DNS Caché Servidor DNS maestro Servidor de DNS en Linux Configuración inicial PC Interfaz Red Dirección PC01 enp0s3 NAT 10.</description><content>&lt;h1 id="contenidos">Contenidos&lt;/h1>
+&lt;p>Este protocolo también se puede utilizar para realizar un balanceo de carga, de manera que el trabajo se reparta entre los servidores primario y secundario.&lt;/p></content></item><item><title>Trabajo de servidores DNS</title><link>https://lordantonio99.github.io/hugo-terminal/posts/servidordnsmasq/</link><pubDate>Thu, 03 Feb 2022 13:16:32 +0100</pubDate><guid>https://lordantonio99.github.io/hugo-terminal/posts/servidordnsmasq/</guid><description>Contenidos Servidor de DNS en Linux Configuración inicial Instalación del servicio Punto 1 A. Creación del una zona para el dominio B. Crear una zona de resolución inversa C. Nombres FQHN D. Servidor web y ftp Punto 2 A. Configuración de las zonas B. Reiniciar los servidores C. Modificar el numero de registro D. Transferencias completas: E. Consultas con dig F. Configura un cliente para que utilice los 2 servidores Punto 3 Instalación Servidor DNS Caché Servidor DNS maestro Punto 4 Configuración DHCP en DNSMASQ Servidor de DNS en Linux Configuración inicial PC Interfaz Red Dirección PC01 enp0s3 NAT 10.</description><content>&lt;h1 id="contenidos">Contenidos&lt;/h1>
 &lt;ul>
 &lt;li>&lt;a href="#servidor-de-dns-en-linux">Servidor de DNS en Linux&lt;/a>
 &lt;ul>
@@ -261,10 +261,15 @@ Componentes de un servidor DHCP Sus componentes son:</description><content>&lt;h
 &lt;li>&lt;a href="#punto-3">Punto 3&lt;/a>
 &lt;ul>
 &lt;li>&lt;a href="#instalaci%C3%B3n">Instalación&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
 &lt;li>&lt;a href="#servidor-dns-cach%C3%A9">Servidor DNS Caché&lt;/a>&lt;/li>
 &lt;li>&lt;a href="#servidor-dns-maestro">Servidor DNS maestro&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#punto-4">Punto 4&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#configuraci%C3%B3n-dhcp-en-dnsmasq">Configuración DHCP en DNSMASQ&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
