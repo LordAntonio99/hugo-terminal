@@ -122,6 +122,10 @@ iptables -A FORWARD -i enp0s8 -o enp0s3 -s 192.168.100.0/24 -p tcp --dport &lt;s
 iptables -A FORWARD -o enp0s8 -i enp0s3 -d 192.168.100.0/24 -p tcp --sport &lt;span style="color:#ae81ff">80&lt;/span> -j ACCEPT
 iptables -A FORWARD -i enp0s9 -o enp0s3 -s 192.168.200.0/24 -p tcp --dport &lt;span style="color:#ae81ff">443&lt;/span> -j ACCEPT
 iptables -A FORWARD -o enp0s9 -i enp0s3 -d 192.168.200.0/24 -p tcp --sport &lt;span style="color:#ae81ff">443&lt;/span> -j ACCEPT
+&lt;span style="color:#75715e">#SNAT&lt;/span>
+iptables -t nat -A POSTROUTING -s 192.168.100.0/24 -o enp0s3 -j MASQUERADE
+&lt;span style="color:#75715e">#DNAT&lt;/span>
+iptables -t nat -A PREROUTING -i enp0s8 -p tcp --dport &lt;span style="color:#ae81ff">80&lt;/span> -j DNAT --to 192.168.200.2
 &lt;/code>&lt;/pre>&lt;/div></content></item><item><title>Servidores DHCP Teoría</title><link>https://lordantonio99.github.io/hugo-terminal/posts/servidoresdhcp/</link><pubDate>Thu, 03 Feb 2022 13:43:56 +0100</pubDate><guid>https://lordantonio99.github.io/hugo-terminal/posts/servidoresdhcp/</guid><description>Servidores DHCP Introducción DHCP es un protocolo de configuración dinámica de hosts, con el que asignamos Ips dentro de un rango que establecemos.
 Su principal función es que los dispositivos de una red obtengan su configuración de internet de forma automática.
 Los hosts que proporcionan servicios de red no deberían usar esta configuración, ya que dependen de ella y pueden desconectarse o causar errores.
