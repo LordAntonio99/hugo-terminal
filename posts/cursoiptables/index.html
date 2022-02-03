@@ -178,6 +178,18 @@ iptables -A INPUT -i enp0s9 -s 192.168.200.0/24 -p icmp -j ACCEPT
 <span style=color:#75715e># Permitir el ping entre las máquinas</span>
 iptables -A FORWARD -i enp0s8 -o enp0s9 -p icmp -J ACCEPT
 iptables -A FORWARD -o enp0s8 -i enp0s9 -p icmp -J ACCEPT
+<span style=color:#75715e># Redirigir el trafico DNS</span>
+iptables -A FORWARD -i enp0s8 -o enp0s3 -s 192.168.100.0/24 -p udp --dport <span style=color:#ae81ff>53</span> -j ACCEPT
+iptables -A FORWARD -o enp0s8 -i enp0s3 -d 192.168.100.0/24 -p udp --sport <span style=color:#ae81ff>53</span> -j ACCEPT
+<span style=color:#75715e># Aceptar trafico web</span>
+iptables -A FORWARD -i enp0s8 -o enp0s3 -s 192.168.100.0/24 -p tcp --dport <span style=color:#ae81ff>80</span> -j ACCEPT
+iptables -A FORWARD -o enp0s8 -i enp0s3 -d 192.168.100.0/24 -p tcp --sport <span style=color:#ae81ff>80</span> -j ACCEPT
+iptables -A FORWARD -i enp0s9 -o enp0s3 -s 192.168.200.0/24 -p tcp --dport <span style=color:#ae81ff>443</span> -j ACCEPT
+iptables -A FORWARD -o enp0s9 -i enp0s3 -d 192.168.200.0/24 -p tcp --sport <span style=color:#ae81ff>443</span> -j ACCEPT
+iptables -A FORWARD -i enp0s8 -o enp0s3 -s 192.168.100.0/24 -p tcp --dport <span style=color:#ae81ff>80</span> -j ACCEPT
+iptables -A FORWARD -o enp0s8 -i enp0s3 -d 192.168.100.0/24 -p tcp --sport <span style=color:#ae81ff>80</span> -j ACCEPT
+iptables -A FORWARD -i enp0s9 -o enp0s3 -s 192.168.200.0/24 -p tcp --dport <span style=color:#ae81ff>443</span> -j ACCEPT
+iptables -A FORWARD -o enp0s9 -i enp0s3 -d 192.168.200.0/24 -p tcp --sport <span style=color:#ae81ff>443</span> -j ACCEPT
 </code></pre></div>
 </div></div>
 <div class=pagination>
