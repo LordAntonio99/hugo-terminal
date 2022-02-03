@@ -148,6 +148,16 @@ iptables -D <span style=color:#f92672>[</span>CADENA<span style=color:#f92672>]<
 </code></pre></div><h3 id=limpiar>Limpiar<a href=#limpiar class=hanchor arialabel=Anchor>&#8983;</a> </h3>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>iptables -F <span style=color:#f92672>[</span>CADENA<span style=color:#f92672>]</span> <span style=color:#75715e># Borra todas las reglas</span>
 iptables -Z <span style=color:#75715e>#Pone los contadores a 0</span>
+</code></pre></div><p><strong>Ejemplo de reglas para iptables personales</strong></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># HTTP</span>
+iptables -A INPUT -i enp0s3 -p tcp --sport <span style=color:#ae81ff>80</span> -j ACCEPT
+iptables -A OUTPUT -o enp0s3 -p tcp --dport <span style=color:#ae81ff>80</span> -j ACCEPT
+<span style=color:#75715e># HTTPS</span>
+iptables -A INPUT -i enp0s3 -p tcp --sport <span style=color:#ae81ff>443</span> -j ACCEPT
+iptables -A OUTPUT -o enp0s3 -p tcp --dport <span style=color:#ae81ff>443</span> -j ACCEPT
+<span style=color:#75715e># DNS</span>
+iptables -A INPUT -i enp0s3 -p udp --sport <span style=color:#ae81ff>53</span> -j ACCEPT
+iptables -A OUTPUT -o enp0s3 -p udp --dport <span style=color:#ae81ff>53</span> -j ACCEPT
 </code></pre></div>
 </div></div>
 <div class=pagination>

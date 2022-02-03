@@ -80,4 +80,14 @@ iptables -D &lt;span style="color:#f92672">[&lt;/span>CADENA&lt;span style="colo
 &lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="limpiar">Limpiar&lt;/h3>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">iptables -F &lt;span style="color:#f92672">[&lt;/span>CADENA&lt;span style="color:#f92672">]&lt;/span> &lt;span style="color:#75715e"># Borra todas las reglas&lt;/span>
 iptables -Z &lt;span style="color:#75715e">#Pone los contadores a 0&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>Ejemplo de reglas para iptables personales&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">&lt;span style="color:#75715e"># HTTP&lt;/span>
+iptables -A INPUT -i enp0s3 -p tcp --sport &lt;span style="color:#ae81ff">80&lt;/span> -j ACCEPT
+iptables -A OUTPUT -o enp0s3 -p tcp --dport &lt;span style="color:#ae81ff">80&lt;/span> -j ACCEPT
+&lt;span style="color:#75715e"># HTTPS&lt;/span>
+iptables -A INPUT -i enp0s3 -p tcp --sport &lt;span style="color:#ae81ff">443&lt;/span> -j ACCEPT
+iptables -A OUTPUT -o enp0s3 -p tcp --dport &lt;span style="color:#ae81ff">443&lt;/span> -j ACCEPT
+&lt;span style="color:#75715e"># DNS&lt;/span>
+iptables -A INPUT -i enp0s3 -p udp --sport &lt;span style="color:#ae81ff">53&lt;/span> -j ACCEPT
+iptables -A OUTPUT -o enp0s3 -p udp --dport &lt;span style="color:#ae81ff">53&lt;/span> -j ACCEPT
 &lt;/code>&lt;/pre>&lt;/div></content></item></channel></rss>

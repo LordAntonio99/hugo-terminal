@@ -80,6 +80,16 @@ iptables -D &lt;span style="color:#f92672">[&lt;/span>CADENA&lt;span style="colo
 &lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="limpiar">Limpiar&lt;/h3>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">iptables -F &lt;span style="color:#f92672">[&lt;/span>CADENA&lt;span style="color:#f92672">]&lt;/span> &lt;span style="color:#75715e"># Borra todas las reglas&lt;/span>
 iptables -Z &lt;span style="color:#75715e">#Pone los contadores a 0&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>Ejemplo de reglas para iptables personales&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">&lt;span style="color:#75715e"># HTTP&lt;/span>
+iptables -A INPUT -i enp0s3 -p tcp --sport &lt;span style="color:#ae81ff">80&lt;/span> -j ACCEPT
+iptables -A OUTPUT -o enp0s3 -p tcp --dport &lt;span style="color:#ae81ff">80&lt;/span> -j ACCEPT
+&lt;span style="color:#75715e"># HTTPS&lt;/span>
+iptables -A INPUT -i enp0s3 -p tcp --sport &lt;span style="color:#ae81ff">443&lt;/span> -j ACCEPT
+iptables -A OUTPUT -o enp0s3 -p tcp --dport &lt;span style="color:#ae81ff">443&lt;/span> -j ACCEPT
+&lt;span style="color:#75715e"># DNS&lt;/span>
+iptables -A INPUT -i enp0s3 -p udp --sport &lt;span style="color:#ae81ff">53&lt;/span> -j ACCEPT
+iptables -A OUTPUT -o enp0s3 -p udp --dport &lt;span style="color:#ae81ff">53&lt;/span> -j ACCEPT
 &lt;/code>&lt;/pre>&lt;/div></content></item><item><title>Servidores DHCP Teoría</title><link>https://lordantonio99.github.io/hugo-terminal/posts/servidoresdhcp/</link><pubDate>Thu, 03 Feb 2022 13:43:56 +0100</pubDate><guid>https://lordantonio99.github.io/hugo-terminal/posts/servidoresdhcp/</guid><description>Servidores DHCP Introducción DHCP es un protocolo de configuración dinámica de hosts, con el que asignamos Ips dentro de un rango que establecemos.
 Su principal función es que los dispositivos de una red obtengan su configuración de internet de forma automática.
 Los hosts que proporcionan servicios de red no deberían usar esta configuración, ya que dependen de ella y pueden desconectarse o causar errores.
