@@ -134,4 +134,9 @@ iptables -A FORWARD -i enp0s8 -o enp0s3 -s 192.168.100.0/24 -p tcp --dport 80 -j
 iptables -A FORWARD -o enp0s8 -i enp0s3 -d 192.168.100.0/24 -p tcp --sport 80 -j ACCEPT
 iptables -A FORWARD -i enp0s9 -o enp0s3 -s 192.168.200.0/24 -p tcp --dport 443 -j ACCEPT
 iptables -A FORWARD -o enp0s9 -i enp0s3 -d 192.168.200.0/24 -p tcp --sport 443 -j ACCEPT
+#SNAT
+iptables -t nat -A POSTROUTING -s 192.168.100.0/24 -o enp0s3 -j MASQUERADE
+#DNAT
+iptables -t nat -A PREROUTING -i enp0s8 -p tcp --dport 80 -j DNAT --to 192.168.200.2
 ```
+
