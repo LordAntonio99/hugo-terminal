@@ -116,9 +116,22 @@ Puedes descargar la OVA para VirtualBox <a href>aqui</a></p>
 </ul>
 <h3 id=cadenas-de-filter>Cadenas de filter<a href=#cadenas-de-filter class=hanchor arialabel=Anchor>&#8983;</a> </h3>
 <ul>
+<li>INPUT: tráfico entrante</li>
+<li>OUTPUT: tráfico saliente</li>
+<li>FORWARD: tráfico de paso</li>
+</ul>
+<h3 id=cadenas-de-nat>Cadenas de nat<a href=#cadenas-de-nat class=hanchor arialabel=Anchor>&#8983;</a> </h3>
+<ul>
+<li>PREROUTING: relacionada con DNAT. Modifica la ip de destino.</li>
 <li>INPUT</li>
 <li>OUTPUT</li>
-<li>FORWARD</li>
+<li>POSTROUTING: relacinada con SNAT. Modifica la ip de paquetes de salida.</li>
+</ul>
+<h3 id=tipo-de-tráfico-y-flujo>Tipo de tráfico y flujo<a href=#tipo-de-tráfico-y-flujo class=hanchor arialabel=Anchor>&#8983;</a> </h3>
+<ul>
+<li>Paquete del exterior con destino el equipo: PREROUTING de nat e INPUT de filter.</li>
+<li>Paquete originado en el equipo que sale: OUTPUT de nat, OUTPUT de filter y POSTROUTING de nat.</li>
+<li>Paquete que atraviesa el equipo: PREROUTING de nat, FORWARD de filter y POSTROUTING de nat.</li>
 </ul>
 </div></div>
 <div class=pagination>

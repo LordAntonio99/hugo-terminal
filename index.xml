@@ -48,9 +48,22 @@ Puedes descargar la OVA para VirtualBox &lt;a href="">aqui&lt;/a>&lt;/p>
 &lt;/ul>
 &lt;h3 id="cadenas-de-filter">Cadenas de filter&lt;/h3>
 &lt;ul>
+&lt;li>INPUT: tráfico entrante&lt;/li>
+&lt;li>OUTPUT: tráfico saliente&lt;/li>
+&lt;li>FORWARD: tráfico de paso&lt;/li>
+&lt;/ul>
+&lt;h3 id="cadenas-de-nat">Cadenas de nat&lt;/h3>
+&lt;ul>
+&lt;li>PREROUTING: relacionada con DNAT. Modifica la ip de destino.&lt;/li>
 &lt;li>INPUT&lt;/li>
 &lt;li>OUTPUT&lt;/li>
-&lt;li>FORWARD&lt;/li>
+&lt;li>POSTROUTING: relacinada con SNAT. Modifica la ip de paquetes de salida.&lt;/li>
+&lt;/ul>
+&lt;h3 id="tipo-de-tráfico-y-flujo">Tipo de tráfico y flujo&lt;/h3>
+&lt;ul>
+&lt;li>Paquete del exterior con destino el equipo: PREROUTING de nat e INPUT de filter.&lt;/li>
+&lt;li>Paquete originado en el equipo que sale: OUTPUT de nat, OUTPUT de filter y POSTROUTING de nat.&lt;/li>
+&lt;li>Paquete que atraviesa el equipo: PREROUTING de nat, FORWARD de filter y POSTROUTING de nat.&lt;/li>
 &lt;/ul></content></item><item><title>Servidores DHCP Teoría</title><link>https://lordantonio99.github.io/hugo-terminal/posts/servidoresdhcp/</link><pubDate>Thu, 03 Feb 2022 13:43:56 +0100</pubDate><guid>https://lordantonio99.github.io/hugo-terminal/posts/servidoresdhcp/</guid><description>Servidores DHCP Introducción DHCP es un protocolo de configuración dinámica de hosts, con el que asignamos Ips dentro de un rango que establecemos.
 Su principal función es que los dispositivos de una red obtengan su configuración de internet de forma automática.
 Los hosts que proporcionan servicios de red no deberían usar esta configuración, ya que dependen de ella y pueden desconectarse o causar errores.
