@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>La web de Antonio</title><link>https://lordantonio99.github.io/hugo-terminal/</link><description>Recent content on La web de Antonio</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Thu, 03 Feb 2022 13:43:56 +0100</lastBuildDate><atom:link href="https://lordantonio99.github.io/hugo-terminal/index.xml" rel="self" type="application/rss+xml"/><item><title>Servidores DHCP Teoría</title><link>https://lordantonio99.github.io/hugo-terminal/posts/servidoresdhcp/</link><pubDate>Thu, 03 Feb 2022 13:43:56 +0100</pubDate><guid>https://lordantonio99.github.io/hugo-terminal/posts/servidoresdhcp/</guid><description>Servidores DHCP Introducción DHCP es un protocolo de configuración dinámica de hosts, con el que asignamos Ips dentro de un rango que establecemos.
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>redes on La web de Antonio</title><link>https://lordantonio99.github.io/hugo-terminal/tags/redes/</link><description>Recent content in redes on La web de Antonio</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Thu, 03 Feb 2022 13:43:56 +0100</lastBuildDate><atom:link href="https://lordantonio99.github.io/hugo-terminal/tags/redes/index.xml" rel="self" type="application/rss+xml"/><item><title>Servidores DHCP Teoría</title><link>https://lordantonio99.github.io/hugo-terminal/posts/servidoresdhcp/</link><pubDate>Thu, 03 Feb 2022 13:43:56 +0100</pubDate><guid>https://lordantonio99.github.io/hugo-terminal/posts/servidoresdhcp/</guid><description>Servidores DHCP Introducción DHCP es un protocolo de configuración dinámica de hosts, con el que asignamos Ips dentro de un rango que establecemos.
 Su principal función es que los dispositivos de una red obtengan su configuración de internet de forma automática.
 Los hosts que proporcionan servicios de red no deberían usar esta configuración, ya que dependen de ella y pueden desconectarse o causar errores.
 Componentes de un servidor DHCP Sus componentes son:</description><content>&lt;h1 id="servidores-dhcp">Servidores DHCP&lt;/h1>
@@ -234,38 +234,4 @@ Componentes de un servidor DHCP Sus componentes son:</description><content>&lt;h
 &lt;h1 id="protocolo-de-failover-en-dhcp">Protocolo de failover en DHCP&lt;/h1>
 &lt;p>Cuando 2 servidores DHCP se encuentran en la misma red, ambos mantienen una base de datos con sus concesiones y sus estados. Para evitar que la misma dirección Ip se asigne a varios equipos, la solución es que estos trabajen con distintos rangos de direcciones.&lt;/p>
 &lt;p>Si ambos servidores desean trabajar con el mismo rango de direcciones, es necesario que sus bases de datos estén sincronizadas. Para esto se utiliza el protocolo Failover entre 2 servidores DHCP.&lt;/p>
-&lt;p>Este protocolo también se puede utilizar para realizar un balanceo de carga, de manera que el trabajo se reparta entre los servidores primario y secundario.&lt;/p></content></item><item><title>Servidordnsmasq</title><link>https://lordantonio99.github.io/hugo-terminal/posts/servidordnsmasq/</link><pubDate>Thu, 03 Feb 2022 13:16:32 +0100</pubDate><guid>https://lordantonio99.github.io/hugo-terminal/posts/servidordnsmasq/</guid><description>Instalación Para instalar el servicio, utilizaremos el siguiente comando:
-apt-get install dnsmasq Una vez instalado el paquete, procederemos a levantar el servicio con el siguiente comando:
-systemctl start dnsmasq Con esto tenemos lista la parte de instalación y preparación del servicio.
-Servidor DNS Caché A continuación configuraremos el servidor para que el servidor dnsmasq pueda ser un servidor caché DNS. Para ello tendremos que modificar el archivo &amp;ldquo;/etc/resolv.conf&amp;rdquo;, donde especificaremos que servidores de DNS externos van a actuar en caso de que el propio servidor no tenga una respuesta.</description><content>&lt;h2 id="instalación">Instalación&lt;/h2>
-&lt;p>Para instalar el servicio, utilizaremos el siguiente comando:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">apt-get install dnsmasq
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Una vez instalado el paquete, procederemos a levantar el servicio con el siguiente comando:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">systemctl start dnsmasq
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Con esto tenemos lista la parte de instalación y preparación del servicio.&lt;/p>
-&lt;h2 id="servidor-dns-caché">Servidor DNS Caché&lt;/h2>
-&lt;p>A continuación configuraremos el servidor para que el servidor dnsmasq pueda ser un servidor caché DNS. Para ello tendremos que modificar el archivo &amp;ldquo;/etc/resolv.conf&amp;rdquo;, donde especificaremos que servidores de DNS externos van a actuar en caso de que el propio servidor no tenga una respuesta. La configuración que utilizaremos será con los 2 servidores DNS de google, de forma que el archivo quede de la siguiente manera:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-bash" data-lang="bash">nameserver 8.8.8.8
-nameserver 8.8.4.4
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Una vez modificado este archivo, reiniciamos el servicio de la red con el comando:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-bash" data-lang="bash">systemctl restart networking
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Para comprobar su funcionamiento, vamos a ejecutar un comando de &amp;ldquo;nslookup&amp;rdquo; con una dirección de internet para comprobar que se resuelve y que servidor lo hace:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-bash" data-lang="bash">nslookup www.google.es
-Server: 8.8.8.8
-Address: 8.8.8.8#53
-Non-authoritative answer:
-Name: www.google.es
-Address: 142.250.184.163
-Name: www.google.es
-Address: 2a00:1450:4003:80c::2003
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>Con esto la configuración del servidor está completada, ahora solo falta modificar el archivo &amp;ldquo;/etc/resolv.conf&amp;rdquo; del resto de los ordenadores de la red para que su servidor DNS sea el de dnsmasq. Para ello pondremos la siguiente configuración:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">nameserver 10.0.0.5
-&lt;/code>&lt;/pre>&lt;/div>&lt;p>La ip seleccionada es la del servidor.&lt;/p>
-&lt;p>A continuación podemos probar a resolver nombres desde cualquier otra máquina, dándonos el siguiente resultado:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">nslookup www.iespabloserrano.com
-Server: 10.0.0.5
-Address: 10.0.0.5#53
-Non-authoritative answer:
-Name: www.iespabloserrano.com
-Address: 82.98.135.44
-&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="servidor-dns-maestro">Servidor DNS maestro&lt;/h2></content></item></channel></rss>
+&lt;p>Este protocolo también se puede utilizar para realizar un balanceo de carga, de manera que el trabajo se reparta entre los servidores primario y secundario.&lt;/p></content></item></channel></rss>
