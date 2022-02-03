@@ -101,3 +101,25 @@ iptables -A OUTPUT -o enp0s3 -p tcp --dport 443 -j ACCEPT
 iptables -A INPUT -i enp0s3 -p udp --sport 53 -j ACCEPT
 iptables -A OUTPUT -o enp0s3 -p udp --dport 53 -j ACCEPT
 ```
+## Configuración del firewall perimetral 1
+```shell
+# Activar en el router el reenvio de paquetes entre interfaces
+echo 1 > /proc/sys/net/ipv4/ip_forward
+# Borrar todas las reglas
+iptables -F
+# Politicas por defecto en DROP
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
+# Permitir el ping por la NAT
+iptables -A OUTPUT -o enp0s3 -p icmp -j ACCEPT
+iptables -A INPUT -i enp0s3 -p icmp -j ACCEPT
+# Permitir el ping del servidor a las demas maquinas y viceversa
+iptables -A OUTPUT -o enp0s8 -s 192.168.100.0/24 -p icmp -j ACCEPT
+iptables -A INPUT -i enp0s8 -s 192.168.100.0/24 -p icmp -j ACCEPT
+iptables -A OUTPUT -o enp0s9 -s 192.168.200.0/24 -p icmp -j ACCEPT
+iptables -A INPUT -i enp0s9 -s 192.168.200.0/24 -p icmp -j ACCEPT
+# Permitir el ping entre las máquinas
+iptables -A FORWARD -i enp0s8 -o enp0s9 -p icmp -J ACCEPT
+iptables -A FORWARD -o enp0s8 -i enp0s9 -p icmp -J ACCEPT
+```
