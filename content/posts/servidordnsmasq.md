@@ -29,8 +29,10 @@ readingTime = true
     + [F. Configura un cliente para que utilice los 2 servidores](#f-configura-un-cliente-para-que-utilice-los-2-servidores)
   * [Punto 3](#punto-3)
     + [Instalación](#instalación)
-  * [Servidor DNS Caché](#servidor-dns-caché)
-  * [Servidor DNS maestro](#servidor-dns-maestro)
+    + [Servidor DNS Caché](#servidor-dns-caché)
+    + [Servidor DNS maestro](#servidor-dns-maestro)
+  * [Punto 4](#punto-4)
+    + [Configuración DHCP en DNSMASQ](#configuración-dhcp-en-dnsmasq)
 
 # Servidor de DNS en Linux
 
