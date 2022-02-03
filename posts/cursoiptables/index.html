@@ -4,7 +4,7 @@
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
 <meta name=description content="Contenidos Filtrado de paquetes Se pueden realizar filtrados en base a diferentes capas del modelo TCP/IP. Sirven para poder controlar el tipo de tráfico que hay en nuestra red, permitir y denegar tráfico, y analizarlo.
-iptables Puede trabajar con ip6tables, ebtables y arptables. Es el proyecto más utilizado y no se desarrollan ya nuevas funcionalidades.">
+iptables Puede trabajar con ip6tables, ebtables y arptables. Es el proyecto más utilizado y no se desarrollan ya nuevas funcionalidades. El proyecto nftables esta desarrollado por los creadores de iptables, y es el sucesor de iptables, ip6tables, arptables y ebtables.">
 <meta name=keywords content=",">
 <meta name=robots content="noodp">
 <link rel=canonical href=https://lordantonio99.github.io/hugo-terminal/posts/cursoiptables/>
@@ -19,7 +19,7 @@ iptables Puede trabajar con ip6tables, ebtables y arptables. Es el proyecto más
 <meta property="og:type" content="article">
 <meta property="og:title" content="Curso completo de iptables">
 <meta property="og:description" content="Contenidos Filtrado de paquetes Se pueden realizar filtrados en base a diferentes capas del modelo TCP/IP. Sirven para poder controlar el tipo de tráfico que hay en nuestra red, permitir y denegar tráfico, y analizarlo.
-iptables Puede trabajar con ip6tables, ebtables y arptables. Es el proyecto más utilizado y no se desarrollan ya nuevas funcionalidades.">
+iptables Puede trabajar con ip6tables, ebtables y arptables. Es el proyecto más utilizado y no se desarrollan ya nuevas funcionalidades. El proyecto nftables esta desarrollado por los creadores de iptables, y es el sucesor de iptables, ip6tables, arptables y ebtables.">
 <meta property="og:url" content="https://lordantonio99.github.io/hugo-terminal/posts/cursoiptables/">
 <meta property="og:site_name" content="La web de Antonio">
 <meta property="og:image" content="https://lordantonio99.github.io/hugo-terminal/">
@@ -71,7 +71,17 @@ Antonio
 <h2 id=filtrado-de-paquetes>Filtrado de paquetes<a href=#filtrado-de-paquetes class=hanchor arialabel=Anchor>&#8983;</a> </h2>
 <p>Se pueden realizar filtrados en base a diferentes capas del modelo TCP/IP. Sirven para poder controlar el tipo de tráfico que hay en nuestra red, permitir y denegar tráfico, y analizarlo.</p>
 <h3 id=iptables>iptables<a href=#iptables class=hanchor arialabel=Anchor>&#8983;</a> </h3>
-<p>Puede trabajar con ip6tables, ebtables y arptables. Es el proyecto más utilizado y no se desarrollan ya nuevas funcionalidades.</p>
+<p>Puede trabajar con ip6tables, ebtables y arptables. Es el proyecto más utilizado y no se desarrollan ya nuevas funcionalidades.
+El proyecto nftables esta desarrollado por los creadores de iptables, y es el sucesor de iptables, ip6tables, arptables y ebtables.</p>
+<h3 id=firewalls>Firewalls<a href=#firewalls class=hanchor arialabel=Anchor>&#8983;</a> </h3>
+<p>Sistema de seguridad que inspecciona el tráfico de red, seleccionando el conforme a unas reglas establecidas.
+El paquete de iptables proporciona algunas funcionalidades extra que no tienen los firewalls, como la NAT.</p>
+<h3 id=nat>NAT<a href=#nat class=hanchor arialabel=Anchor>&#8983;</a> </h3>
+<p>Sirve principalmente para:</p>
+<ul>
+<li>Un equipo con dirección privada que quiere salir a internet (SNAT)</li>
+<li>Un equipo que quiere acceder a un servicio ubicado en una dirección privada (DNAT)</li>
+</ul>
 </div></div>
 <div class=pagination>
 <div class=pagination__title>

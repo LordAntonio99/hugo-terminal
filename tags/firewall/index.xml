@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>firewall on La web de Antonio</title><link>https://lordantonio99.github.io/hugo-terminal/tags/firewall/</link><description>Recent content in firewall on La web de Antonio</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Thu, 03 Feb 2022 15:41:27 +0100</lastBuildDate><atom:link href="https://lordantonio99.github.io/hugo-terminal/tags/firewall/index.xml" rel="self" type="application/rss+xml"/><item><title>Curso completo de iptables</title><link>https://lordantonio99.github.io/hugo-terminal/posts/cursoiptables/</link><pubDate>Thu, 03 Feb 2022 15:41:27 +0100</pubDate><guid>https://lordantonio99.github.io/hugo-terminal/posts/cursoiptables/</guid><description>Contenidos Filtrado de paquetes Se pueden realizar filtrados en base a diferentes capas del modelo TCP/IP. Sirven para poder controlar el tipo de tráfico que hay en nuestra red, permitir y denegar tráfico, y analizarlo.
-iptables Puede trabajar con ip6tables, ebtables y arptables. Es el proyecto más utilizado y no se desarrollan ya nuevas funcionalidades.</description><content>&lt;h1 id="contenidos">Contenidos&lt;/h1>
+iptables Puede trabajar con ip6tables, ebtables y arptables. Es el proyecto más utilizado y no se desarrollan ya nuevas funcionalidades. El proyecto nftables esta desarrollado por los creadores de iptables, y es el sucesor de iptables, ip6tables, arptables y ebtables.</description><content>&lt;h1 id="contenidos">Contenidos&lt;/h1>
 &lt;h2 id="filtrado-de-paquetes">Filtrado de paquetes&lt;/h2>
 &lt;p>Se pueden realizar filtrados en base a diferentes capas del modelo TCP/IP. Sirven para poder controlar el tipo de tráfico que hay en nuestra red, permitir y denegar tráfico, y analizarlo.&lt;/p>
 &lt;h3 id="iptables">iptables&lt;/h3>
-&lt;p>Puede trabajar con ip6tables, ebtables y arptables. Es el proyecto más utilizado y no se desarrollan ya nuevas funcionalidades.&lt;/p></content></item></channel></rss>
+&lt;p>Puede trabajar con ip6tables, ebtables y arptables. Es el proyecto más utilizado y no se desarrollan ya nuevas funcionalidades.
+El proyecto nftables esta desarrollado por los creadores de iptables, y es el sucesor de iptables, ip6tables, arptables y ebtables.&lt;/p>
+&lt;h3 id="firewalls">Firewalls&lt;/h3>
+&lt;p>Sistema de seguridad que inspecciona el tráfico de red, seleccionando el conforme a unas reglas establecidas.
+El paquete de iptables proporciona algunas funcionalidades extra que no tienen los firewalls, como la NAT.&lt;/p>
+&lt;h3 id="nat">NAT&lt;/h3>
+&lt;p>Sirve principalmente para:&lt;/p>
+&lt;ul>
+&lt;li>Un equipo con dirección privada que quiere salir a internet (SNAT)&lt;/li>
+&lt;li>Un equipo que quiere acceder a un servicio ubicado en una dirección privada (DNAT)&lt;/li>
+&lt;/ul></content></item></channel></rss>
