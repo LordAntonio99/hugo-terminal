@@ -234,10 +234,16 @@ Componentes de un servidor DHCP Sus componentes son:</description><content>&lt;h
 &lt;h1 id="protocolo-de-failover-en-dhcp">Protocolo de failover en DHCP&lt;/h1>
 &lt;p>Cuando 2 servidores DHCP se encuentran en la misma red, ambos mantienen una base de datos con sus concesiones y sus estados. Para evitar que la misma dirección Ip se asigne a varios equipos, la solución es que estos trabajen con distintos rangos de direcciones.&lt;/p>
 &lt;p>Si ambos servidores desean trabajar con el mismo rango de direcciones, es necesario que sus bases de datos estén sincronizadas. Para esto se utiliza el protocolo Failover entre 2 servidores DHCP.&lt;/p>
-&lt;p>Este protocolo también se puede utilizar para realizar un balanceo de carga, de manera que el trabajo se reparta entre los servidores primario y secundario.&lt;/p></content></item><item><title>Servidordnsmasq</title><link>https://lordantonio99.github.io/hugo-terminal/posts/servidordnsmasq/</link><pubDate>Thu, 03 Feb 2022 13:16:32 +0100</pubDate><guid>https://lordantonio99.github.io/hugo-terminal/posts/servidordnsmasq/</guid><description>Instalación Para instalar el servicio, utilizaremos el siguiente comando:
+&lt;p>Este protocolo también se puede utilizar para realizar un balanceo de carga, de manera que el trabajo se reparta entre los servidores primario y secundario.&lt;/p></content></item><item><title>Servidordnsmasq</title><link>https://lordantonio99.github.io/hugo-terminal/posts/servidordnsmasq/</link><pubDate>Thu, 03 Feb 2022 13:16:32 +0100</pubDate><guid>https://lordantonio99.github.io/hugo-terminal/posts/servidordnsmasq/</guid><description>Contenidos Instalación Servidor DNS Caché Servidor DNS maestro Instalación Para instalar el servicio, utilizaremos el siguiente comando:
 apt-get install dnsmasq Una vez instalado el paquete, procederemos a levantar el servicio con el siguiente comando:
 systemctl start dnsmasq Con esto tenemos lista la parte de instalación y preparación del servicio.
-Servidor DNS Caché A continuación configuraremos el servidor para que el servidor dnsmasq pueda ser un servidor caché DNS. Para ello tendremos que modificar el archivo &amp;ldquo;/etc/resolv.conf&amp;rdquo;, donde especificaremos que servidores de DNS externos van a actuar en caso de que el propio servidor no tenga una respuesta.</description><content>&lt;h2 id="instalación">Instalación&lt;/h2>
+Servidor DNS Caché A continuación configuraremos el servidor para que el servidor dnsmasq pueda ser un servidor caché DNS. Para ello tendremos que modificar el archivo &amp;ldquo;/etc/resolv.</description><content>&lt;h1 id="contenidos">Contenidos&lt;/h1>
+&lt;ul>
+&lt;li>&lt;a href="#instalaci%C3%B3n">Instalación&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#servidor-dns-cach%C3%A9">Servidor DNS Caché&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#servidor-dns-maestro">Servidor DNS maestro&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;h2 id="instalación">Instalación&lt;/h2>
 &lt;p>Para instalar el servicio, utilizaremos el siguiente comando:&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">apt-get install dnsmasq
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>Una vez instalado el paquete, procederemos a levantar el servicio con el siguiente comando:&lt;/p>
