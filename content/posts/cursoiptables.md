@@ -12,12 +12,12 @@ readingTime = false
 +++
 
 # Contenidos
-- ["Filtrado de paquetes"](#filtrado-de-paquetes)
-    - ["iptables"](#iptables)
-    - ["firewalls"](#firewalls)
-    - ["NAT"](#nat)
-        - ["SNAT"](#snat)
-        - ["DNAT"](#dnat)
+1. [Filtrado de paquetes](#filtrado-de-paquetes)
+    1.1. [iptables](#iptables)
+    1.2. [firewalls](#firewalls)
+    1.3. [NAT](#nat)
+    1.4. [SNAT](#snat)
+    1.5. [DNAT](#dnat)
 
 
 ## Filtrado de paquetes
@@ -36,3 +36,5 @@ Sirve principalmente para:
 Es la más comun para acceder a redes de Internet desde una red privada. Un dispositivo de NAT modifica la ip privada de origen por una ip pública. Puede utilizarse también entre redes privadas para no generar demasiadas reglas estáticas.
 #### DNAT
 Se utiliza para exponer un servicio que está en una ip privada. Un dispositivo NAT modifica la ip pública de una petición para un servicio, asignandole una ip privada de dentro del servidor.
+## Esquema de red
+![](/img/esquemaiptables.png)
