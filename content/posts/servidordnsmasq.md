@@ -1,5 +1,5 @@
 +++
-title = "Servidordnsmasq"
+title = "Trabajo de servidores DNS"
 date = "2022-02-03T13:16:32+01:00"
 author = ""
 authorTwitter = "" #do not include @
@@ -12,11 +12,481 @@ readingTime = false
 +++
 
 # Contenidos
-- [Instalación](#instalación)
-- [Servidor DNS Caché](#servidor-dns-caché)
-- [Servidor DNS maestro](#servidor-dns-maestro)
+- [Servidor de DNS en Linux](#servidor-de-dns-en-linux)
+  * [Configuración inicial](#configuración-inicial)
+  * [Instalación del servicio](#instalación-del-servicio)
+  * [Punto 1](#punto-1)
+    + [A. Creación del una zona para el dominio](#a-creación-del-una-zona-para-el-dominio)
+    + [B. Crear una zona de resolución inversa](#b-crear-una-zona-de-resolución-inversa)
+    + [C. Nombres FQHN](#c-nombres-fqhn)
+    + [D. Servidor web y ftp](#d-servidor-web-y-ftp)
+  * [Punto 2](#punto-2)
+    + [A. Configuración de las zonas](#a-configuración-de-las-zonas)
+    + [B. Reiniciar los servidores](#b-reiniciar-los-servidores)
+    + [C. Modificar el numero de registro](#c-modificar-el-numero-de-registro)
+    + [D. Transferencias completas:](#d-transferencias-completas-)
+    + [E. Consultas con dig](#e-consultas-con-dig)
+    + [F. Configura un cliente para que utilice los 2 servidores](#f-configura-un-cliente-para-que-utilice-los-2-servidores)
+  * [Punto 3](#punto-3)
+    + [Instalación](#instalación)
+  * [Servidor DNS Caché](#servidor-dns-caché)
+  * [Servidor DNS maestro](#servidor-dns-maestro)
 
-## Instalación
+# Servidor de DNS en Linux
+
+## Configuración inicial
+
+| PC     | Interfaz | Red  | Dirección    |
+| ------ | -------- | ---- | ------------ |
+| PC01   | enp0s3   | NAT  | 10.0.2.15/24 |
+| PC01   | enp0s8   | red2 | 10.0.0.2/24  |
+| PC02   | enp0s3   | NAT  | 10.0.2.15/24 |
+| PC02   | enp0s8   | red1 | 10.0.1.2/24  |
+| Router | enp0s3   | NAT  | 10.0.2.15/24 |
+| Router | enp0s8   | red1 | 10.0.1.1/24  |
+| Router | enp0s9   | red2 | 10.0.0.1/24  |
+| DNS    | enp0s3   | NAT  | 10.0.2.15/24 |
+| DNS    | enp0s8   | red2 | 10.0.0.3/24  |
+
+## Instalación del servicio
+
+Lo primero que haremos será crear un dominio, para lo que utilizaremos el paquete de bind9, que además funcionará como servidor DNS cuando se configure. 
+
+Para instalar dicho paquete y sus todos sus paquetes sugeridos según la documentación oficial, ejecutaremos el siguiente comando:
+
+```shell
+sudo apt install bind9 bind9-doc resolvconf python-ply-doc
+```
+
+Una vez instalado, iremos a la carpeta de este paquete para ver sus archivos de configuración y podremos ver todos los archivos que nos ha generado:
+
+```shell
+cd /etc/bind
+ls -l
+total 48
+-rw-r--r-- 1 root root 1991 Oct 25 07:29 bind.keys
+-rw-r--r-- 1 root root  237 Oct 25 07:29 db.0
+-rw-r--r-- 1 root root  271 Oct 25 07:29 db.127
+-rw-r--r-- 1 root root  237 Oct 25 07:29 db.255
+-rw-r--r-- 1 root root  353 Oct 25 07:29 db.empty
+-rw-r--r-- 1 root root  270 Oct 25 07:29 db.local
+-rw-r--r-- 1 root bind  463 Oct 25 07:29 named.conf
+-rw-r--r-- 1 root bind  498 Oct 25 07:29 named.conf.default-zones
+-rw-r--r-- 1 root bind  165 Oct 25 07:29 named.conf.local
+-rw-r--r-- 1 root bind  846 Oct 25 07:29 named.conf.options
+-rw-r----- 1 bind bind  100 Jan 31 06:13 rndc.key
+-rw-r--r-- 1 root root 1317 Oct 25 07:29 zones.rfc1918
+```
+
+## Punto 1
+
+### A. Creación del una zona para el dominio
+
+Lo primero que haremos, será configurar los forwarders de bind9 para que utilicen servidores DNS públicos y puedan ser funcionales para el dominio.
+
+Para esto lo primero que tenemos que hacer será configurar el archivo "named.conf.options", no sin antes crear una copia de seguridad por si acaso hay algún tipo de fallo:
+
+```shell
+cp named.conf.options named.conf.options.copia
+```
+
+A continuación configuraremos los servidores DNS de Google en el archivo original. Lo único que haremos será descomentar la sección de forwarders y escribir los que nosotros queramos:
+
+```html
+options {
+        directory "/var/cache/bind";
+
+        forwarders {
+                8.8.8.8;
+                1.1.1.1;
+        };
+
+        dnssec-validation auto;
+
+        listen-on-v6 { any; };
+};
+```
+
+A continuación configuraremos bind9 para las resoluciones locales, para lo que tendremos que modificar el archivo "named.conf.local", que al igual que con el anterior, se le realizará la correspondiente copia por si acaso hay errores:
+
+```shell
+cp named.conf.local named.conf.local.copia
+```
+
+A continuación, procederemos a crear una zona con el dominio que queramos, en este caso "asir2.com":
+
+```html
+zone "asir2.com" {
+        type master;
+        file "/etc/bind/db.asir2.com";
+};
+```
+
+Como hemos especificado en el anterior código, será un servidor DNS maestro, y tendrá su configuración en el archivo "db.asir2.com"
+
+```shell
+cp db.local db.asir2.com
+```
+
+A continuación modificaremos dicho archivo para ajustarlo a la configuración que queramos:
+
+```shell
+;
+; BIND data file for local asir2.com
+;
+$TTL    604800
+@       IN      SOA     asir2.com. root.asir2.com. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      asir2.com.
+@       IN      A       10.0.0.3
+@       IN      AAAA    ::1
+ns      IN      A       10.0.0.3
+pc01    IN      A       10.0.0.2
+router  IN      A       10.0.0.1
+pc02    IN      A       10.0.1.2
+```
+
+En este archivo, habremos modificado la línea que trae por defecto el nombre de servidor de localhost por "asir2.com" para que de esta forma quede asegurado nuestro dominio.
+
+Una vez realizadas las configuraciones, procederemos a reiniciar el servicio para que todos los cambios se apliquen.
+
+```shell
+systemctl restart bind9
+```
+
+Si ahora probamos a utilizar el comando host buscando cualquier nombre de la red veremos como nos aparece su ip tal y como se ha especificado en el anterior archivo.
+
+### B. Crear una zona de resolución inversa
+
+Para crear la zona de resolución inversa, añadiremos una nueva al archivo "named.conf.local" con los siguientes datos:
+
+```html
+zone "0.10.in-addr.arpa" {
+        type master;
+        file "/etc/bind/db.asir2inv.com";
+};
+```
+
+Lo siguiente que haremos será crear la nueva base de datos para guardar las diferentes direcciones ip:
+
+```shell
+cp db.127 db.asir2inv.com;
+```
+
+Con la nueva base de datos creada a partir del archivo "db.127", el cual tiene la estructura de la resolución inversa, modificaremos los diferentes parámetros de forma que quede así:
+
+```html
+  GNU nano 5.4                                                    db.asir2inv.com                                                             
+;
+; BIND reverse data file for asir2inv.com
+;
+$TTL    604800
+@       IN      SOA     ns.asir2inv.com. root.asir2inv.com. (
+                              1         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      ns.
+3.0     IN      PTR     ns.asir2inv.com.
+2.0     IN      PTR     pc01.asir2inv.com.
+1.0     IN      PTR     router.asir2inv.com.
+2.1     IN      PTR     pc02.asir2inv.com.
+```
+
+### C. Nombres FQHN
+
+Los nombres asignados para todas las interfaces son:
+
+| PC     | Interfaz | Red  | Dirección   | FQDN             |
+| ------ | -------- | ---- | ----------- | ---------------- |
+| PC01   | enp0s8   | red2 | 10.0.0.2/24 | pc01.asir2.com   |
+| PC02   | enp0s8   | red1 | 10.0.1.2/24 | pc02.asir2.com   |
+| Router | enp0s8   | red1 | 10.0.1.1/24 | router.asir2.com |
+| Router | enp0s9   | red2 | 10.0.0.1/24 | router.asir2.com |
+| DNS    | enp0s8   | red2 | 10.0.0.3/24 | ns.asir2.com     |
+
+Los registros de estos son:
+
+```html
+ns      IN      A       10.0.0.3
+pc01    IN      A       10.0.0.2
+router  IN      A       10.0.0.1
+router  IN      A       10.0.1.1
+pc02    IN      A       10.0.1.2
+```
+
+Para la zona de resolución inversa es la siguiente:
+
+| PC     | Interfaz | Red  | Dirección             | FQDN                |
+| ------ | -------- | ---- | --------------------- | ------------------- |
+| PC01   | enp0s8   | red2 | 2.0.0.10.in-addr.arpa | pc01.asir2inv.com   |
+| PC02   | enp0s8   | red1 | 2.1.0.10.in-addr.arpa | pc02.asir2inv.com   |
+| Router | enp0s8   | red1 | 1.1.0.10.in-addr.arpa | router.asir2inv.com |
+| Router | enp0s9   | red2 | 1.0.0.10.in-addr.arpa | router.asir2inv.com |
+| DNS    | enp0s8   | red2 | 3.0.0.10.in-addr.arpa | ns.asir2inv.com     |
+
+Los registros de esta zona son los siguientes:
+
+```html
+3.0     IN      PTR     ns.asir2inv.com.
+2.0     IN      PTR     pc01.asir2inv.com.
+1.0     IN      PTR     router.asir2inv.com.
+1.1     IN      PTR     router.asir2inv.com.
+2.1     IN      PTR     pc02.asir2inv.com.
+```
+
+### D. Servidor web y ftp
+
+Se agregan los nuevos registros al servidor DNS normal:
+
+```html
+;
+; BIND data file for local asir2.com
+;
+$TTL    604800
+@       IN      SOA     asir2.com. root.asir2.com. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      asir2.com.
+@       IN      A       10.0.0.3
+@       IN      AAAA    ::1
+ns      IN      A       10.0.0.3
+pc01    IN      A       10.0.0.2
+router  IN      A       10.0.0.1
+router  IN      A       10.0.1.1
+pc02    IN      A       10.0.1.2
+web     IN      A       10.0.0.4
+ftp     IN      A       10.0.0.5
+```
+
+Y al servidor de DNS inverso:
+
+```html
+;
+; BIND reverse data file for asir2inv.com
+;
+$TTL    604800
+@       IN      SOA     ns.asir2inv.com. root.asir2inv.com. (
+                              1         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      ns.
+3.0     IN      PTR     ns.asir2inv.com.
+2.0     IN      PTR     pc01.asir2inv.com.
+1.0     IN      PTR     router.asir2inv.com.
+1.1     IN      PTR     router.asir2inv.com.
+2.1     IN      PTR     pc02.asir2inv.com.
+4.0     IN      PTR     web.asir2inv.com.
+5.0     IN      PTR     ftp.asir2inv.com.
+```
+
+## Punto 2
+
+### A. Configuración de las zonas
+
+```html
+zone "asir2.com" {
+        type slave;
+        masters {10.0.0.3;};
+        file "/etc/bind/db.asir2.com";
+};
+
+zone "0.10.in-addr.arpa" {
+        type slave;
+        masters {10.0.0.3;};
+        file "/etc/bind/db.asir2inv.com";
+};
+```
+
+### B. Reiniciar los servidores
+
+Servidor maestro:
+
+```html
+root@dns:/etc/bind# systemctl status bind9
+● named.service - BIND Domain Name Server
+     Loaded: loaded (/lib/systemd/system/named.service; enabled; vendor preset: enabled)
+     Active: active (running) since Wed 2022-02-02 13:43:22 EST; 4s ago
+       Docs: man:named(8)
+   Main PID: 1665 (named)
+      Tasks: 4 (limit: 1117)
+     Memory: 12.5M
+        CPU: 23ms
+     CGroup: /system.slice/named.service
+             └─1665 /usr/sbin/named -f -u bind
+
+Feb 02 13:43:23 dns named[1665]: FORMERR resolving './NS/IN': 202.12.27.33#53
+Feb 02 13:43:23 dns named[1665]: DNS format error from 192.33.4.12#53 resolving ./NS for <unknown>: non-improving referral
+Feb 02 13:43:23 dns named[1665]: FORMERR resolving './NS/IN': 192.33.4.12#53
+Feb 02 13:43:23 dns named[1665]: DNS format error from 192.112.36.4#53 resolving ./NS for <unknown>: non-improving referral
+Feb 02 13:43:23 dns named[1665]: FORMERR resolving './NS/IN': 192.112.36.4#53
+Feb 02 13:43:23 dns named[1665]: DNS format error from 192.5.5.241#53 resolving ./NS for <unknown>: non-improving referral
+Feb 02 13:43:23 dns named[1665]: FORMERR resolving './NS/IN': 192.5.5.241#53
+Feb 02 13:43:23 dns named[1665]: DNS format error from 199.7.83.42#53 resolving ./NS for <unknown>: non-improving referral
+Feb 02 13:43:23 dns named[1665]: FORMERR resolving './NS/IN': 199.7.83.42#53
+Feb 02 13:43:23 dns named[1665]: resolver priming query complete
+```
+
+Esclavo:
+
+```html
+root@dnsslave:/etc/bind# systemctl status bind9
+● named.service - BIND Domain Name Server
+     Loaded: loaded (/lib/systemd/system/named.service; enabled; vendor preset: enabled)
+     Active: active (running) since Wed 2022-02-02 13:48:54 EST; 1min 7s ago
+       Docs: man:named(8)
+   Main PID: 1867 (named)
+      Tasks: 5 (limit: 1117)
+     Memory: 18.7M
+        CPU: 75ms
+     CGroup: /system.slice/named.service
+             └─1867 /usr/sbin/named -f -u bind
+
+Feb 02 13:49:52 dnsslave named[1867]: automatic empty zone: EMPTY.AS112.ARPA
+Feb 02 13:49:52 dnsslave named[1867]: automatic empty zone: HOME.ARPA
+Feb 02 13:49:52 dnsslave named[1867]: configuring command channel from '/etc/bind/rndc.key'
+Feb 02 13:49:52 dnsslave named[1867]: configuring command channel from '/etc/bind/rndc.key'
+Feb 02 13:49:52 dnsslave named[1867]: reloading configuration succeeded
+Feb 02 13:49:52 dnsslave named[1867]: scheduled loading new zones
+Feb 02 13:49:52 dnsslave named[1867]: managed-keys-zone: Unable to fetch DNSKEY set '.': operation canceled
+Feb 02 13:49:52 dnsslave named[1867]: resolver priming query complete
+Feb 02 13:49:52 dnsslave named[1867]: any newly configured zones are now loaded
+Feb 02 13:49:52 dnsslave named[1867]: running
+```
+
+### C. Modificar el numero de registro
+
+En los 2 se ha puesto en el serial el número 7.
+
+```html
+@       IN      SOA     asir2.com. root.asir2.com. (
+                              7         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+```
+
+La salida del log muestra lo siguiente:
+
+```html
+root@dnsslave:/etc/bind# systemctl status bind9
+● named.service - BIND Domain Name Server
+     Loaded: loaded (/lib/systemd/system/named.service; enabled; vendor preset: enabled)
+     Active: active (running) since Wed 2022-02-02 13:55:37 EST; 1s ago
+       Docs: man:named(8)
+   Main PID: 2021 (named)
+      Tasks: 4 (limit: 1117)
+     Memory: 12.3M
+        CPU: 26ms
+     CGroup: /system.slice/named.service
+             └─2021 /usr/sbin/named -f -u bind
+
+Feb 02 13:55:37 dnsslave named[2021]: DNS format error from 193.0.14.129#53 resolving ./NS for <unknown>: non-improving referral
+Feb 02 13:55:37 dnsslave named[2021]: FORMERR resolving './NS/IN': 193.0.14.129#53
+Feb 02 13:55:37 dnsslave named[2021]: resolver priming query complete
+Feb 02 13:55:37 dnsslave named[2021]: zone 0.10.in-addr.arpa/IN: Transfer started.
+Feb 02 13:55:37 dnsslave named[2021]: transfer of '0.10.in-addr.arpa/IN' from 10.0.0.3#53: connected using 10.0.0.4#49701
+Feb 02 13:55:37 dnsslave named[2021]: zone 0.10.in-addr.arpa/IN: transferred serial 7
+Feb 02 13:55:37 dnsslave named[2021]: transfer of '0.10.in-addr.arpa/IN' from 10.0.0.3#53: Transfer status: success
+Feb 02 13:55:37 dnsslave named[2021]: transfer of '0.10.in-addr.arpa/IN' from 10.0.0.3#53: Transfer completed: 1 messages, 10 records, 318 by>Feb 02 13:55:37 dnsslave named[2021]: zone 0.10.in-addr.arpa/IN: sending notifies (serial 7)
+```
+
+### D. Transferencias completas:
+
+```html
+Feb 02 13:55:37 dnsslave named[2021]: zone 0.10.in-addr.arpa/IN: Transfer started.
+Feb 02 13:55:37 dnsslave named[2021]: transfer of '0.10.in-addr.arpa/IN' from 10.0.0.3#53: connected using 10.0.0.4#49701
+Feb 02 13:55:37 dnsslave named[2021]: zone 0.10.in-addr.arpa/IN: transferred serial 7
+Feb 02 13:55:37 dnsslave named[2021]: transfer of '0.10.in-addr.arpa/IN' from 10.0.0.3#53: Transfer status: success
+Feb 02 13:55:37 dnsslave named[2021]: transfer of '0.10.in-addr.arpa/IN' from 10.0.0.3#53: Transfer completed: 1 messages, 10 records, 318 by>Feb 02 13:55:37 dnsslave named[2021]: zone 0.10.in-addr.arpa/IN: sending notifies (serial 7)
+
+```
+
+### E. Consultas con dig
+
+Consulta desde pc01:
+
+```html
+root@pc01:/home/alu# dig @10.0.0.4 ns.asir2.com
+
+; <<>> DiG 9.16.22-Debian <<>> @10.0.0.4 ns.asir2.com
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 64110
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 2b1a042f6d8709ad0100000061fad3eaf7478968c4ee03ef (good)
+;; QUESTION SECTION:
+;ns.asir2.com.                  IN      A
+
+;; ANSWER SECTION:
+ns.asir2.com.           604800  IN      A       10.0.0.3
+
+;; Query time: 0 msec
+;; SERVER: 10.0.0.4#53(10.0.0.4)
+;; WHEN: Wed Feb 02 13:56:42 EST 2022
+;; MSG SIZE  rcvd: 85
+```
+
+Consulta desde pc02:
+
+```html
+root@pc02:/home/alu# dig @10.0.0.3 pc01.asir2.com
+
+; <<>> DiG 9.16.22-Debian <<>> @10.0.0.3 pc01.asir2.com
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 62022
+;; flags: qr aa rd; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+;; WARNING: recursion requested but not available
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 2343e31b1c2b68660100000061fad436c65a3e43b4168f94 (good)
+;; QUESTION SECTION:
+;pc01.asir2.com.                        IN      A
+
+;; ANSWER SECTION:
+pc01.asir2.com.         604800  IN      A       10.0.0.2
+
+;; Query time: 0 msec
+;; SERVER: 10.0.0.3#53(10.0.0.3)
+;; WHEN: Wed Feb 02 13:57:59 EST 2022
+;; MSG SIZE  rcvd: 87
+```
+
+Como se puede ver, ambos servidores, el 10.0.0.3 y el 10.0.0.4 pueden resolver sin problemas.
+
+### F. Configura un cliente para que utilice los 2 servidores
+
+Modificaremos el archivo "/etc/resolv.conf" del pc01.
+
+```html
+nameserver 10.0.0.3
+nameserver 10.0.0.4
+```
+
+## Punto 3
+### Instalación
 
 Para instalar el servicio, utilizaremos el siguiente comando:
 
