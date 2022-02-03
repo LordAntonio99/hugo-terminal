@@ -122,4 +122,16 @@ iptables -A INPUT -i enp0s9 -s 192.168.200.0/24 -p icmp -j ACCEPT
 # Permitir el ping entre las máquinas
 iptables -A FORWARD -i enp0s8 -o enp0s9 -p icmp -J ACCEPT
 iptables -A FORWARD -o enp0s8 -i enp0s9 -p icmp -J ACCEPT
+# Redirigir el trafico DNS
+iptables -A FORWARD -i enp0s8 -o enp0s3 -s 192.168.100.0/24 -p udp --dport 53 -j ACCEPT
+iptables -A FORWARD -o enp0s8 -i enp0s3 -d 192.168.100.0/24 -p udp --sport 53 -j ACCEPT
+# Aceptar trafico web
+iptables -A FORWARD -i enp0s8 -o enp0s3 -s 192.168.100.0/24 -p tcp --dport 80 -j ACCEPT
+iptables -A FORWARD -o enp0s8 -i enp0s3 -d 192.168.100.0/24 -p tcp --sport 80 -j ACCEPT
+iptables -A FORWARD -i enp0s9 -o enp0s3 -s 192.168.200.0/24 -p tcp --dport 443 -j ACCEPT
+iptables -A FORWARD -o enp0s9 -i enp0s3 -d 192.168.200.0/24 -p tcp --sport 443 -j ACCEPT
+iptables -A FORWARD -i enp0s8 -o enp0s3 -s 192.168.100.0/24 -p tcp --dport 80 -j ACCEPT
+iptables -A FORWARD -o enp0s8 -i enp0s3 -d 192.168.100.0/24 -p tcp --sport 80 -j ACCEPT
+iptables -A FORWARD -i enp0s9 -o enp0s3 -s 192.168.200.0/24 -p tcp --dport 443 -j ACCEPT
+iptables -A FORWARD -o enp0s9 -i enp0s3 -d 192.168.200.0/24 -p tcp --sport 443 -j ACCEPT
 ```
