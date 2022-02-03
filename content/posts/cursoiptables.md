@@ -50,6 +50,15 @@ Puedes descargar la OVA para VirtualBox [aqui]()
 - raw: depurar seguimiento de conexión.
 - security: usadas para MAC.
 ### Cadenas de filter
+- INPUT: tráfico entrante
+- OUTPUT: tráfico saliente
+- FORWARD: tráfico de paso
+### Cadenas de nat
+- PREROUTING: relacionada con DNAT. Modifica la ip de destino.
 - INPUT
 - OUTPUT
-- FORWARD
+- POSTROUTING: relacinada con SNAT. Modifica la ip de paquetes de salida.
+### Tipo de tráfico y flujo
+- Paquete del exterior con destino el equipo: PREROUTING de nat e INPUT de filter.
+- Paquete originado en el equipo que sale: OUTPUT de nat, OUTPUT de filter y POSTROUTING de nat.
+- Paquete que atraviesa el equipo: PREROUTING de nat, FORWARD de filter y POSTROUTING de nat.
