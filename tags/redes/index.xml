@@ -234,4 +234,590 @@ Componentes de un servidor DHCP Sus componentes son:</description><content>&lt;h
 &lt;h1 id="protocolo-de-failover-en-dhcp">Protocolo de failover en DHCP&lt;/h1>
 &lt;p>Cuando 2 servidores DHCP se encuentran en la misma red, ambos mantienen una base de datos con sus concesiones y sus estados. Para evitar que la misma dirección Ip se asigne a varios equipos, la solución es que estos trabajen con distintos rangos de direcciones.&lt;/p>
 &lt;p>Si ambos servidores desean trabajar con el mismo rango de direcciones, es necesario que sus bases de datos estén sincronizadas. Para esto se utiliza el protocolo Failover entre 2 servidores DHCP.&lt;/p>
-&lt;p>Este protocolo también se puede utilizar para realizar un balanceo de carga, de manera que el trabajo se reparta entre los servidores primario y secundario.&lt;/p></content></item></channel></rss>
+&lt;p>Este protocolo también se puede utilizar para realizar un balanceo de carga, de manera que el trabajo se reparta entre los servidores primario y secundario.&lt;/p></content></item><item><title>Trabajo de servidores DNS</title><link>https://lordantonio99.github.io/hugo-terminal/posts/servidordnsmasq/</link><pubDate>Thu, 03 Feb 2022 13:16:32 +0100</pubDate><guid>https://lordantonio99.github.io/hugo-terminal/posts/servidordnsmasq/</guid><description>Contenidos Servidor de DNS en Linux Configuración inicial Instalación del servicio Punto 1 A. Creación del una zona para el dominio B. Crear una zona de resolución inversa C. Nombres FQHN D. Servidor web y ftp Punto 2 A. Configuración de las zonas B. Reiniciar los servidores C. Modificar el numero de registro D. Transferencias completas: E. Consultas con dig F. Configura un cliente para que utilice los 2 servidores Punto 3 Instalación Servidor DNS Caché Servidor DNS maestro Servidor de DNS en Linux Configuración inicial PC Interfaz Red Dirección PC01 enp0s3 NAT 10.</description><content>&lt;h1 id="contenidos">Contenidos&lt;/h1>
+&lt;ul>
+&lt;li>&lt;a href="#servidor-de-dns-en-linux">Servidor de DNS en Linux&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#configuraci%C3%B3n-inicial">Configuración inicial&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#instalaci%C3%B3n-del-servicio">Instalación del servicio&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#punto-1">Punto 1&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#a-creaci%C3%B3n-del-una-zona-para-el-dominio">A. Creación del una zona para el dominio&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#b-crear-una-zona-de-resoluci%C3%B3n-inversa">B. Crear una zona de resolución inversa&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#c-nombres-fqhn">C. Nombres FQHN&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#d-servidor-web-y-ftp">D. Servidor web y ftp&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#punto-2">Punto 2&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#a-configuraci%C3%B3n-de-las-zonas">A. Configuración de las zonas&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#b-reiniciar-los-servidores">B. Reiniciar los servidores&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#c-modificar-el-numero-de-registro">C. Modificar el numero de registro&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#d-transferencias-completas-">D. Transferencias completas:&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#e-consultas-con-dig">E. Consultas con dig&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#f-configura-un-cliente-para-que-utilice-los-2-servidores">F. Configura un cliente para que utilice los 2 servidores&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#punto-3">Punto 3&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#instalaci%C3%B3n">Instalación&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#servidor-dns-cach%C3%A9">Servidor DNS Caché&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#servidor-dns-maestro">Servidor DNS maestro&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h1 id="servidor-de-dns-en-linux">Servidor de DNS en Linux&lt;/h1>
+&lt;h2 id="configuración-inicial">Configuración inicial&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>PC&lt;/th>
+&lt;th>Interfaz&lt;/th>
+&lt;th>Red&lt;/th>
+&lt;th>Dirección&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>PC01&lt;/td>
+&lt;td>enp0s3&lt;/td>
+&lt;td>NAT&lt;/td>
+&lt;td>10.0.2.15/24&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>PC01&lt;/td>
+&lt;td>enp0s8&lt;/td>
+&lt;td>red2&lt;/td>
+&lt;td>10.0.0.2/24&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>PC02&lt;/td>
+&lt;td>enp0s3&lt;/td>
+&lt;td>NAT&lt;/td>
+&lt;td>10.0.2.15/24&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>PC02&lt;/td>
+&lt;td>enp0s8&lt;/td>
+&lt;td>red1&lt;/td>
+&lt;td>10.0.1.2/24&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Router&lt;/td>
+&lt;td>enp0s3&lt;/td>
+&lt;td>NAT&lt;/td>
+&lt;td>10.0.2.15/24&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Router&lt;/td>
+&lt;td>enp0s8&lt;/td>
+&lt;td>red1&lt;/td>
+&lt;td>10.0.1.1/24&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Router&lt;/td>
+&lt;td>enp0s9&lt;/td>
+&lt;td>red2&lt;/td>
+&lt;td>10.0.0.1/24&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>DNS&lt;/td>
+&lt;td>enp0s3&lt;/td>
+&lt;td>NAT&lt;/td>
+&lt;td>10.0.2.15/24&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>DNS&lt;/td>
+&lt;td>enp0s8&lt;/td>
+&lt;td>red2&lt;/td>
+&lt;td>10.0.0.3/24&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="instalación-del-servicio">Instalación del servicio&lt;/h2>
+&lt;p>Lo primero que haremos será crear un dominio, para lo que utilizaremos el paquete de bind9, que además funcionará como servidor DNS cuando se configure.&lt;/p>
+&lt;p>Para instalar dicho paquete y sus todos sus paquetes sugeridos según la documentación oficial, ejecutaremos el siguiente comando:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">sudo apt install bind9 bind9-doc resolvconf python-ply-doc
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Una vez instalado, iremos a la carpeta de este paquete para ver sus archivos de configuración y podremos ver todos los archivos que nos ha generado:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">cd /etc/bind
+ls -l
+total &lt;span style="color:#ae81ff">48&lt;/span>
+-rw-r--r-- &lt;span style="color:#ae81ff">1&lt;/span> root root &lt;span style="color:#ae81ff">1991&lt;/span> Oct &lt;span style="color:#ae81ff">25&lt;/span> 07:29 bind.keys
+-rw-r--r-- &lt;span style="color:#ae81ff">1&lt;/span> root root &lt;span style="color:#ae81ff">237&lt;/span> Oct &lt;span style="color:#ae81ff">25&lt;/span> 07:29 db.0
+-rw-r--r-- &lt;span style="color:#ae81ff">1&lt;/span> root root &lt;span style="color:#ae81ff">271&lt;/span> Oct &lt;span style="color:#ae81ff">25&lt;/span> 07:29 db.127
+-rw-r--r-- &lt;span style="color:#ae81ff">1&lt;/span> root root &lt;span style="color:#ae81ff">237&lt;/span> Oct &lt;span style="color:#ae81ff">25&lt;/span> 07:29 db.255
+-rw-r--r-- &lt;span style="color:#ae81ff">1&lt;/span> root root &lt;span style="color:#ae81ff">353&lt;/span> Oct &lt;span style="color:#ae81ff">25&lt;/span> 07:29 db.empty
+-rw-r--r-- &lt;span style="color:#ae81ff">1&lt;/span> root root &lt;span style="color:#ae81ff">270&lt;/span> Oct &lt;span style="color:#ae81ff">25&lt;/span> 07:29 db.local
+-rw-r--r-- &lt;span style="color:#ae81ff">1&lt;/span> root bind &lt;span style="color:#ae81ff">463&lt;/span> Oct &lt;span style="color:#ae81ff">25&lt;/span> 07:29 named.conf
+-rw-r--r-- &lt;span style="color:#ae81ff">1&lt;/span> root bind &lt;span style="color:#ae81ff">498&lt;/span> Oct &lt;span style="color:#ae81ff">25&lt;/span> 07:29 named.conf.default-zones
+-rw-r--r-- &lt;span style="color:#ae81ff">1&lt;/span> root bind &lt;span style="color:#ae81ff">165&lt;/span> Oct &lt;span style="color:#ae81ff">25&lt;/span> 07:29 named.conf.local
+-rw-r--r-- &lt;span style="color:#ae81ff">1&lt;/span> root bind &lt;span style="color:#ae81ff">846&lt;/span> Oct &lt;span style="color:#ae81ff">25&lt;/span> 07:29 named.conf.options
+-rw-r----- &lt;span style="color:#ae81ff">1&lt;/span> bind bind &lt;span style="color:#ae81ff">100&lt;/span> Jan &lt;span style="color:#ae81ff">31&lt;/span> 06:13 rndc.key
+-rw-r--r-- &lt;span style="color:#ae81ff">1&lt;/span> root root &lt;span style="color:#ae81ff">1317&lt;/span> Oct &lt;span style="color:#ae81ff">25&lt;/span> 07:29 zones.rfc1918
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="punto-1">Punto 1&lt;/h2>
+&lt;h3 id="a-creación-del-una-zona-para-el-dominio">A. Creación del una zona para el dominio&lt;/h3>
+&lt;p>Lo primero que haremos, será configurar los forwarders de bind9 para que utilicen servidores DNS públicos y puedan ser funcionales para el dominio.&lt;/p>
+&lt;p>Para esto lo primero que tenemos que hacer será configurar el archivo &amp;ldquo;named.conf.options&amp;rdquo;, no sin antes crear una copia de seguridad por si acaso hay algún tipo de fallo:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">cp named.conf.options named.conf.options.copia
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>A continuación configuraremos los servidores DNS de Google en el archivo original. Lo único que haremos será descomentar la sección de forwarders y escribir los que nosotros queramos:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-html" data-lang="html">options {
+directory &amp;#34;/var/cache/bind&amp;#34;;
+forwarders {
+8.8.8.8;
+1.1.1.1;
+};
+dnssec-validation auto;
+listen-on-v6 { any; };
+};
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>A continuación configuraremos bind9 para las resoluciones locales, para lo que tendremos que modificar el archivo &amp;ldquo;named.conf.local&amp;rdquo;, que al igual que con el anterior, se le realizará la correspondiente copia por si acaso hay errores:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">cp named.conf.local named.conf.local.copia
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>A continuación, procederemos a crear una zona con el dominio que queramos, en este caso &amp;ldquo;asir2.com&amp;rdquo;:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-html" data-lang="html">zone &amp;#34;asir2.com&amp;#34; {
+type master;
+file &amp;#34;/etc/bind/db.asir2.com&amp;#34;;
+};
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Como hemos especificado en el anterior código, será un servidor DNS maestro, y tendrá su configuración en el archivo &amp;ldquo;db.asir2.com&amp;rdquo;&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">cp db.local db.asir2.com
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>A continuación modificaremos dicho archivo para ajustarlo a la configuración que queramos:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">;
+; BIND data file &lt;span style="color:#66d9ef">for&lt;/span> local asir2.com
+;
+$TTL &lt;span style="color:#ae81ff">604800&lt;/span>
+@ IN SOA asir2.com. root.asir2.com. &lt;span style="color:#f92672">(&lt;/span>
+&lt;span style="color:#ae81ff">2&lt;/span> ; Serial
+&lt;span style="color:#ae81ff">604800&lt;/span> ; Refresh
+&lt;span style="color:#ae81ff">86400&lt;/span> ; Retry
+&lt;span style="color:#ae81ff">2419200&lt;/span> ; Expire
+&lt;span style="color:#ae81ff">604800&lt;/span> &lt;span style="color:#f92672">)&lt;/span> ; Negative Cache TTL
+;
+@ IN NS asir2.com.
+@ IN A 10.0.0.3
+@ IN AAAA ::1
+ns IN A 10.0.0.3
+pc01 IN A 10.0.0.2
+router IN A 10.0.0.1
+pc02 IN A 10.0.1.2
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>En este archivo, habremos modificado la línea que trae por defecto el nombre de servidor de localhost por &amp;ldquo;asir2.com&amp;rdquo; para que de esta forma quede asegurado nuestro dominio.&lt;/p>
+&lt;p>Una vez realizadas las configuraciones, procederemos a reiniciar el servicio para que todos los cambios se apliquen.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">systemctl restart bind9
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Si ahora probamos a utilizar el comando host buscando cualquier nombre de la red veremos como nos aparece su ip tal y como se ha especificado en el anterior archivo.&lt;/p>
+&lt;h3 id="b-crear-una-zona-de-resolución-inversa">B. Crear una zona de resolución inversa&lt;/h3>
+&lt;p>Para crear la zona de resolución inversa, añadiremos una nueva al archivo &amp;ldquo;named.conf.local&amp;rdquo; con los siguientes datos:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-html" data-lang="html">zone &amp;#34;0.10.in-addr.arpa&amp;#34; {
+type master;
+file &amp;#34;/etc/bind/db.asir2inv.com&amp;#34;;
+};
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Lo siguiente que haremos será crear la nueva base de datos para guardar las diferentes direcciones ip:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">cp db.127 db.asir2inv.com;
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Con la nueva base de datos creada a partir del archivo &amp;ldquo;db.127&amp;rdquo;, el cual tiene la estructura de la resolución inversa, modificaremos los diferentes parámetros de forma que quede así:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-html" data-lang="html"> GNU nano 5.4 db.asir2inv.com
+;
+; BIND reverse data file for asir2inv.com
+;
+$TTL 604800
+@ IN SOA ns.asir2inv.com. root.asir2inv.com. (
+1 ; Serial
+604800 ; Refresh
+86400 ; Retry
+2419200 ; Expire
+604800 ) ; Negative Cache TTL
+;
+@ IN NS ns.
+3.0 IN PTR ns.asir2inv.com.
+2.0 IN PTR pc01.asir2inv.com.
+1.0 IN PTR router.asir2inv.com.
+2.1 IN PTR pc02.asir2inv.com.
+&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="c-nombres-fqhn">C. Nombres FQHN&lt;/h3>
+&lt;p>Los nombres asignados para todas las interfaces son:&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>PC&lt;/th>
+&lt;th>Interfaz&lt;/th>
+&lt;th>Red&lt;/th>
+&lt;th>Dirección&lt;/th>
+&lt;th>FQDN&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>PC01&lt;/td>
+&lt;td>enp0s8&lt;/td>
+&lt;td>red2&lt;/td>
+&lt;td>10.0.0.2/24&lt;/td>
+&lt;td>pc01.asir2.com&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>PC02&lt;/td>
+&lt;td>enp0s8&lt;/td>
+&lt;td>red1&lt;/td>
+&lt;td>10.0.1.2/24&lt;/td>
+&lt;td>pc02.asir2.com&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Router&lt;/td>
+&lt;td>enp0s8&lt;/td>
+&lt;td>red1&lt;/td>
+&lt;td>10.0.1.1/24&lt;/td>
+&lt;td>router.asir2.com&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Router&lt;/td>
+&lt;td>enp0s9&lt;/td>
+&lt;td>red2&lt;/td>
+&lt;td>10.0.0.1/24&lt;/td>
+&lt;td>router.asir2.com&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>DNS&lt;/td>
+&lt;td>enp0s8&lt;/td>
+&lt;td>red2&lt;/td>
+&lt;td>10.0.0.3/24&lt;/td>
+&lt;td>ns.asir2.com&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>Los registros de estos son:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-html" data-lang="html">ns IN A 10.0.0.3
+pc01 IN A 10.0.0.2
+router IN A 10.0.0.1
+router IN A 10.0.1.1
+pc02 IN A 10.0.1.2
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Para la zona de resolución inversa es la siguiente:&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>PC&lt;/th>
+&lt;th>Interfaz&lt;/th>
+&lt;th>Red&lt;/th>
+&lt;th>Dirección&lt;/th>
+&lt;th>FQDN&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>PC01&lt;/td>
+&lt;td>enp0s8&lt;/td>
+&lt;td>red2&lt;/td>
+&lt;td>2.0.0.10.in-addr.arpa&lt;/td>
+&lt;td>pc01.asir2inv.com&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>PC02&lt;/td>
+&lt;td>enp0s8&lt;/td>
+&lt;td>red1&lt;/td>
+&lt;td>2.1.0.10.in-addr.arpa&lt;/td>
+&lt;td>pc02.asir2inv.com&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Router&lt;/td>
+&lt;td>enp0s8&lt;/td>
+&lt;td>red1&lt;/td>
+&lt;td>1.1.0.10.in-addr.arpa&lt;/td>
+&lt;td>router.asir2inv.com&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Router&lt;/td>
+&lt;td>enp0s9&lt;/td>
+&lt;td>red2&lt;/td>
+&lt;td>1.0.0.10.in-addr.arpa&lt;/td>
+&lt;td>router.asir2inv.com&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>DNS&lt;/td>
+&lt;td>enp0s8&lt;/td>
+&lt;td>red2&lt;/td>
+&lt;td>3.0.0.10.in-addr.arpa&lt;/td>
+&lt;td>ns.asir2inv.com&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>Los registros de esta zona son los siguientes:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-html" data-lang="html">3.0 IN PTR ns.asir2inv.com.
+2.0 IN PTR pc01.asir2inv.com.
+1.0 IN PTR router.asir2inv.com.
+1.1 IN PTR router.asir2inv.com.
+2.1 IN PTR pc02.asir2inv.com.
+&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="d-servidor-web-y-ftp">D. Servidor web y ftp&lt;/h3>
+&lt;p>Se agregan los nuevos registros al servidor DNS normal:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-html" data-lang="html">;
+; BIND data file for local asir2.com
+;
+$TTL 604800
+@ IN SOA asir2.com. root.asir2.com. (
+2 ; Serial
+604800 ; Refresh
+86400 ; Retry
+2419200 ; Expire
+604800 ) ; Negative Cache TTL
+;
+@ IN NS asir2.com.
+@ IN A 10.0.0.3
+@ IN AAAA ::1
+ns IN A 10.0.0.3
+pc01 IN A 10.0.0.2
+router IN A 10.0.0.1
+router IN A 10.0.1.1
+pc02 IN A 10.0.1.2
+web IN A 10.0.0.4
+ftp IN A 10.0.0.5
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Y al servidor de DNS inverso:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-html" data-lang="html">;
+; BIND reverse data file for asir2inv.com
+;
+$TTL 604800
+@ IN SOA ns.asir2inv.com. root.asir2inv.com. (
+1 ; Serial
+604800 ; Refresh
+86400 ; Retry
+2419200 ; Expire
+604800 ) ; Negative Cache TTL
+;
+@ IN NS ns.
+3.0 IN PTR ns.asir2inv.com.
+2.0 IN PTR pc01.asir2inv.com.
+1.0 IN PTR router.asir2inv.com.
+1.1 IN PTR router.asir2inv.com.
+2.1 IN PTR pc02.asir2inv.com.
+4.0 IN PTR web.asir2inv.com.
+5.0 IN PTR ftp.asir2inv.com.
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="punto-2">Punto 2&lt;/h2>
+&lt;h3 id="a-configuración-de-las-zonas">A. Configuración de las zonas&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-html" data-lang="html">zone &amp;#34;asir2.com&amp;#34; {
+type slave;
+masters {10.0.0.3;};
+file &amp;#34;/etc/bind/db.asir2.com&amp;#34;;
+};
+zone &amp;#34;0.10.in-addr.arpa&amp;#34; {
+type slave;
+masters {10.0.0.3;};
+file &amp;#34;/etc/bind/db.asir2inv.com&amp;#34;;
+};
+&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="b-reiniciar-los-servidores">B. Reiniciar los servidores&lt;/h3>
+&lt;p>Servidor maestro:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-html" data-lang="html">root@dns:/etc/bind# systemctl status bind9
+● named.service - BIND Domain Name Server
+Loaded: loaded (/lib/systemd/system/named.service; enabled; vendor preset: enabled)
+Active: active (running) since Wed 2022-02-02 13:43:22 EST; 4s ago
+Docs: man:named(8)
+Main PID: 1665 (named)
+Tasks: 4 (limit: 1117)
+Memory: 12.5M
+CPU: 23ms
+CGroup: /system.slice/named.service
+└─1665 /usr/sbin/named -f -u bind
+Feb 02 13:43:23 dns named[1665]: FORMERR resolving &amp;#39;./NS/IN&amp;#39;: 202.12.27.33#53
+Feb 02 13:43:23 dns named[1665]: DNS format error from 192.33.4.12#53 resolving ./NS for &amp;lt;&lt;span style="color:#f92672">unknown&lt;/span>&amp;gt;: non-improving referral
+Feb 02 13:43:23 dns named[1665]: FORMERR resolving &amp;#39;./NS/IN&amp;#39;: 192.33.4.12#53
+Feb 02 13:43:23 dns named[1665]: DNS format error from 192.112.36.4#53 resolving ./NS for &amp;lt;&lt;span style="color:#f92672">unknown&lt;/span>&amp;gt;: non-improving referral
+Feb 02 13:43:23 dns named[1665]: FORMERR resolving &amp;#39;./NS/IN&amp;#39;: 192.112.36.4#53
+Feb 02 13:43:23 dns named[1665]: DNS format error from 192.5.5.241#53 resolving ./NS for &amp;lt;&lt;span style="color:#f92672">unknown&lt;/span>&amp;gt;: non-improving referral
+Feb 02 13:43:23 dns named[1665]: FORMERR resolving &amp;#39;./NS/IN&amp;#39;: 192.5.5.241#53
+Feb 02 13:43:23 dns named[1665]: DNS format error from 199.7.83.42#53 resolving ./NS for &amp;lt;&lt;span style="color:#f92672">unknown&lt;/span>&amp;gt;: non-improving referral
+Feb 02 13:43:23 dns named[1665]: FORMERR resolving &amp;#39;./NS/IN&amp;#39;: 199.7.83.42#53
+Feb 02 13:43:23 dns named[1665]: resolver priming query complete
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Esclavo:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-html" data-lang="html">root@dnsslave:/etc/bind# systemctl status bind9
+● named.service - BIND Domain Name Server
+Loaded: loaded (/lib/systemd/system/named.service; enabled; vendor preset: enabled)
+Active: active (running) since Wed 2022-02-02 13:48:54 EST; 1min 7s ago
+Docs: man:named(8)
+Main PID: 1867 (named)
+Tasks: 5 (limit: 1117)
+Memory: 18.7M
+CPU: 75ms
+CGroup: /system.slice/named.service
+└─1867 /usr/sbin/named -f -u bind
+Feb 02 13:49:52 dnsslave named[1867]: automatic empty zone: EMPTY.AS112.ARPA
+Feb 02 13:49:52 dnsslave named[1867]: automatic empty zone: HOME.ARPA
+Feb 02 13:49:52 dnsslave named[1867]: configuring command channel from &amp;#39;/etc/bind/rndc.key&amp;#39;
+Feb 02 13:49:52 dnsslave named[1867]: configuring command channel from &amp;#39;/etc/bind/rndc.key&amp;#39;
+Feb 02 13:49:52 dnsslave named[1867]: reloading configuration succeeded
+Feb 02 13:49:52 dnsslave named[1867]: scheduled loading new zones
+Feb 02 13:49:52 dnsslave named[1867]: managed-keys-zone: Unable to fetch DNSKEY set &amp;#39;.&amp;#39;: operation canceled
+Feb 02 13:49:52 dnsslave named[1867]: resolver priming query complete
+Feb 02 13:49:52 dnsslave named[1867]: any newly configured zones are now loaded
+Feb 02 13:49:52 dnsslave named[1867]: running
+&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="c-modificar-el-numero-de-registro">C. Modificar el numero de registro&lt;/h3>
+&lt;p>En los 2 se ha puesto en el serial el número 7.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-html" data-lang="html">@ IN SOA asir2.com. root.asir2.com. (
+7 ; Serial
+604800 ; Refresh
+86400 ; Retry
+2419200 ; Expire
+604800 ) ; Negative Cache TTL
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>La salida del log muestra lo siguiente:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-html" data-lang="html">root@dnsslave:/etc/bind# systemctl status bind9
+● named.service - BIND Domain Name Server
+Loaded: loaded (/lib/systemd/system/named.service; enabled; vendor preset: enabled)
+Active: active (running) since Wed 2022-02-02 13:55:37 EST; 1s ago
+Docs: man:named(8)
+Main PID: 2021 (named)
+Tasks: 4 (limit: 1117)
+Memory: 12.3M
+CPU: 26ms
+CGroup: /system.slice/named.service
+└─2021 /usr/sbin/named -f -u bind
+Feb 02 13:55:37 dnsslave named[2021]: DNS format error from 193.0.14.129#53 resolving ./NS for &amp;lt;&lt;span style="color:#f92672">unknown&lt;/span>&amp;gt;: non-improving referral
+Feb 02 13:55:37 dnsslave named[2021]: FORMERR resolving &amp;#39;./NS/IN&amp;#39;: 193.0.14.129#53
+Feb 02 13:55:37 dnsslave named[2021]: resolver priming query complete
+Feb 02 13:55:37 dnsslave named[2021]: zone 0.10.in-addr.arpa/IN: Transfer started.
+Feb 02 13:55:37 dnsslave named[2021]: transfer of &amp;#39;0.10.in-addr.arpa/IN&amp;#39; from 10.0.0.3#53: connected using 10.0.0.4#49701
+Feb 02 13:55:37 dnsslave named[2021]: zone 0.10.in-addr.arpa/IN: transferred serial 7
+Feb 02 13:55:37 dnsslave named[2021]: transfer of &amp;#39;0.10.in-addr.arpa/IN&amp;#39; from 10.0.0.3#53: Transfer status: success
+Feb 02 13:55:37 dnsslave named[2021]: transfer of &amp;#39;0.10.in-addr.arpa/IN&amp;#39; from 10.0.0.3#53: Transfer completed: 1 messages, 10 records, 318 by&amp;gt;Feb 02 13:55:37 dnsslave named[2021]: zone 0.10.in-addr.arpa/IN: sending notifies (serial 7)
+&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="d-transferencias-completas">D. Transferencias completas:&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-html" data-lang="html">Feb 02 13:55:37 dnsslave named[2021]: zone 0.10.in-addr.arpa/IN: Transfer started.
+Feb 02 13:55:37 dnsslave named[2021]: transfer of &amp;#39;0.10.in-addr.arpa/IN&amp;#39; from 10.0.0.3#53: connected using 10.0.0.4#49701
+Feb 02 13:55:37 dnsslave named[2021]: zone 0.10.in-addr.arpa/IN: transferred serial 7
+Feb 02 13:55:37 dnsslave named[2021]: transfer of &amp;#39;0.10.in-addr.arpa/IN&amp;#39; from 10.0.0.3#53: Transfer status: success
+Feb 02 13:55:37 dnsslave named[2021]: transfer of &amp;#39;0.10.in-addr.arpa/IN&amp;#39; from 10.0.0.3#53: Transfer completed: 1 messages, 10 records, 318 by&amp;gt;Feb 02 13:55:37 dnsslave named[2021]: zone 0.10.in-addr.arpa/IN: sending notifies (serial 7)
+&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="e-consultas-con-dig">E. Consultas con dig&lt;/h3>
+&lt;p>Consulta desde pc01:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-html" data-lang="html">root@pc01:/home/alu# dig @10.0.0.4 ns.asir2.com
+; &lt;span style="color:#960050;background-color:#1e0010">&amp;lt;&amp;lt;&lt;/span>&amp;gt;&amp;gt; DiG 9.16.22-Debian &lt;span style="color:#960050;background-color:#1e0010">&amp;lt;&amp;lt;&lt;/span>&amp;gt;&amp;gt; @10.0.0.4 ns.asir2.com
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; -&amp;gt;&amp;gt;HEADER&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;&lt;/span>&amp;lt;&lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#a6e22e">opcode:&lt;/span> &lt;span style="color:#a6e22e">QUERY&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">,&lt;/span> &lt;span style="color:#a6e22e">status:&lt;/span> &lt;span style="color:#a6e22e">NOERROR&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">,&lt;/span> &lt;span style="color:#a6e22e">id:&lt;/span> &lt;span style="color:#a6e22e">64110&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;;&lt;/span> &lt;span style="color:#a6e22e">flags:&lt;/span> &lt;span style="color:#a6e22e">qr&lt;/span> &lt;span style="color:#a6e22e">aa&lt;/span> &lt;span style="color:#a6e22e">rd&lt;/span> &lt;span style="color:#a6e22e">ra&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">;&lt;/span> &lt;span style="color:#a6e22e">QUERY:&lt;/span> &lt;span style="color:#a6e22e">1&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">,&lt;/span> &lt;span style="color:#a6e22e">ANSWER:&lt;/span> &lt;span style="color:#a6e22e">1&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">,&lt;/span> &lt;span style="color:#a6e22e">AUTHORITY:&lt;/span> &lt;span style="color:#a6e22e">0&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">,&lt;/span> &lt;span style="color:#a6e22e">ADDITIONAL:&lt;/span> &lt;span style="color:#a6e22e">1&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;;&lt;/span> &lt;span style="color:#a6e22e">OPT&lt;/span> &lt;span style="color:#a6e22e">PSEUDOSECTION:&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;&lt;/span> &lt;span style="color:#a6e22e">EDNS:&lt;/span> &lt;span style="color:#a6e22e">version:&lt;/span> &lt;span style="color:#a6e22e">0&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">,&lt;/span> &lt;span style="color:#a6e22e">flags:&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">;&lt;/span> &lt;span style="color:#a6e22e">udp:&lt;/span> &lt;span style="color:#a6e22e">1232&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;&lt;/span> &lt;span style="color:#a6e22e">COOKIE:&lt;/span> &lt;span style="color:#a6e22e">2b1a042f6d8709ad0100000061fad3eaf7478968c4ee03ef&lt;/span> &lt;span style="color:#960050;background-color:#1e0010">(&lt;/span>&lt;span style="color:#a6e22e">good&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">)&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;;&lt;/span> &lt;span style="color:#a6e22e">QUESTION&lt;/span> &lt;span style="color:#a6e22e">SECTION:&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;&lt;/span>&lt;span style="color:#a6e22e">ns&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">asir2&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">com&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span> &lt;span style="color:#a6e22e">IN&lt;/span> &lt;span style="color:#a6e22e">A&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;;&lt;/span> &lt;span style="color:#a6e22e">ANSWER&lt;/span> &lt;span style="color:#a6e22e">SECTION:&lt;/span>
+&lt;span style="color:#a6e22e">ns&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">asir2&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">com&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span> &lt;span style="color:#a6e22e">604800&lt;/span> &lt;span style="color:#a6e22e">IN&lt;/span> &lt;span style="color:#a6e22e">A&lt;/span> &lt;span style="color:#a6e22e">10&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">0&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">0&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">3&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;;&lt;/span> &lt;span style="color:#a6e22e">Query&lt;/span> &lt;span style="color:#a6e22e">time:&lt;/span> &lt;span style="color:#a6e22e">0&lt;/span> &lt;span style="color:#a6e22e">msec&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;;&lt;/span> &lt;span style="color:#a6e22e">SERVER:&lt;/span> &lt;span style="color:#a6e22e">10&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">0&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">0&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">4&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">#&lt;/span>&lt;span style="color:#a6e22e">53&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">(&lt;/span>&lt;span style="color:#a6e22e">10&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">0&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">0&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">4&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">)&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;;&lt;/span> &lt;span style="color:#a6e22e">WHEN:&lt;/span> &lt;span style="color:#a6e22e">Wed&lt;/span> &lt;span style="color:#a6e22e">Feb&lt;/span> &lt;span style="color:#a6e22e">02&lt;/span> &lt;span style="color:#a6e22e">13:56:42&lt;/span> &lt;span style="color:#a6e22e">EST&lt;/span> &lt;span style="color:#a6e22e">2022&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;;&lt;/span> &lt;span style="color:#a6e22e">MSG&lt;/span> &lt;span style="color:#a6e22e">SIZE&lt;/span> &lt;span style="color:#a6e22e">rcvd:&lt;/span> &lt;span style="color:#a6e22e">85&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Consulta desde pc02:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-html" data-lang="html">root@pc02:/home/alu# dig @10.0.0.3 pc01.asir2.com
+; &lt;span style="color:#960050;background-color:#1e0010">&amp;lt;&amp;lt;&lt;/span>&amp;gt;&amp;gt; DiG 9.16.22-Debian &lt;span style="color:#960050;background-color:#1e0010">&amp;lt;&amp;lt;&lt;/span>&amp;gt;&amp;gt; @10.0.0.3 pc01.asir2.com
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; -&amp;gt;&amp;gt;HEADER&lt;span style="color:#960050;background-color:#1e0010">&amp;lt;&lt;/span>&amp;lt;&lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#a6e22e">opcode:&lt;/span> &lt;span style="color:#a6e22e">QUERY&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">,&lt;/span> &lt;span style="color:#a6e22e">status:&lt;/span> &lt;span style="color:#a6e22e">NOERROR&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">,&lt;/span> &lt;span style="color:#a6e22e">id:&lt;/span> &lt;span style="color:#a6e22e">62022&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;;&lt;/span> &lt;span style="color:#a6e22e">flags:&lt;/span> &lt;span style="color:#a6e22e">qr&lt;/span> &lt;span style="color:#a6e22e">aa&lt;/span> &lt;span style="color:#a6e22e">rd&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">;&lt;/span> &lt;span style="color:#a6e22e">QUERY:&lt;/span> &lt;span style="color:#a6e22e">1&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">,&lt;/span> &lt;span style="color:#a6e22e">ANSWER:&lt;/span> &lt;span style="color:#a6e22e">1&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">,&lt;/span> &lt;span style="color:#a6e22e">AUTHORITY:&lt;/span> &lt;span style="color:#a6e22e">0&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">,&lt;/span> &lt;span style="color:#a6e22e">ADDITIONAL:&lt;/span> &lt;span style="color:#a6e22e">1&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;;&lt;/span> &lt;span style="color:#a6e22e">WARNING:&lt;/span> &lt;span style="color:#a6e22e">recursion&lt;/span> &lt;span style="color:#a6e22e">requested&lt;/span> &lt;span style="color:#a6e22e">but&lt;/span> &lt;span style="color:#a6e22e">not&lt;/span> &lt;span style="color:#a6e22e">available&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;;&lt;/span> &lt;span style="color:#a6e22e">OPT&lt;/span> &lt;span style="color:#a6e22e">PSEUDOSECTION:&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;&lt;/span> &lt;span style="color:#a6e22e">EDNS:&lt;/span> &lt;span style="color:#a6e22e">version:&lt;/span> &lt;span style="color:#a6e22e">0&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">,&lt;/span> &lt;span style="color:#a6e22e">flags:&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">;&lt;/span> &lt;span style="color:#a6e22e">udp:&lt;/span> &lt;span style="color:#a6e22e">1232&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;&lt;/span> &lt;span style="color:#a6e22e">COOKIE:&lt;/span> &lt;span style="color:#a6e22e">2343e31b1c2b68660100000061fad436c65a3e43b4168f94&lt;/span> &lt;span style="color:#960050;background-color:#1e0010">(&lt;/span>&lt;span style="color:#a6e22e">good&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">)&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;;&lt;/span> &lt;span style="color:#a6e22e">QUESTION&lt;/span> &lt;span style="color:#a6e22e">SECTION:&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;&lt;/span>&lt;span style="color:#a6e22e">pc01&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">asir2&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">com&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span> &lt;span style="color:#a6e22e">IN&lt;/span> &lt;span style="color:#a6e22e">A&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;;&lt;/span> &lt;span style="color:#a6e22e">ANSWER&lt;/span> &lt;span style="color:#a6e22e">SECTION:&lt;/span>
+&lt;span style="color:#a6e22e">pc01&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">asir2&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">com&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span> &lt;span style="color:#a6e22e">604800&lt;/span> &lt;span style="color:#a6e22e">IN&lt;/span> &lt;span style="color:#a6e22e">A&lt;/span> &lt;span style="color:#a6e22e">10&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">0&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">0&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">2&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;;&lt;/span> &lt;span style="color:#a6e22e">Query&lt;/span> &lt;span style="color:#a6e22e">time:&lt;/span> &lt;span style="color:#a6e22e">0&lt;/span> &lt;span style="color:#a6e22e">msec&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;;&lt;/span> &lt;span style="color:#a6e22e">SERVER:&lt;/span> &lt;span style="color:#a6e22e">10&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">0&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">0&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">3&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">#&lt;/span>&lt;span style="color:#a6e22e">53&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">(&lt;/span>&lt;span style="color:#a6e22e">10&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">0&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">0&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">.&lt;/span>&lt;span style="color:#a6e22e">3&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">)&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;;&lt;/span> &lt;span style="color:#a6e22e">WHEN:&lt;/span> &lt;span style="color:#a6e22e">Wed&lt;/span> &lt;span style="color:#a6e22e">Feb&lt;/span> &lt;span style="color:#a6e22e">02&lt;/span> &lt;span style="color:#a6e22e">13:57:59&lt;/span> &lt;span style="color:#a6e22e">EST&lt;/span> &lt;span style="color:#a6e22e">2022&lt;/span>
+&lt;span style="color:#960050;background-color:#1e0010">;;&lt;/span> &lt;span style="color:#a6e22e">MSG&lt;/span> &lt;span style="color:#a6e22e">SIZE&lt;/span> &lt;span style="color:#a6e22e">rcvd:&lt;/span> &lt;span style="color:#a6e22e">87&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Como se puede ver, ambos servidores, el 10.0.0.3 y el 10.0.0.4 pueden resolver sin problemas.&lt;/p>
+&lt;h3 id="f-configura-un-cliente-para-que-utilice-los-2-servidores">F. Configura un cliente para que utilice los 2 servidores&lt;/h3>
+&lt;p>Modificaremos el archivo &amp;ldquo;/etc/resolv.conf&amp;rdquo; del pc01.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-html" data-lang="html">nameserver 10.0.0.3
+nameserver 10.0.0.4
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="punto-3">Punto 3&lt;/h2>
+&lt;h3 id="instalación">Instalación&lt;/h3>
+&lt;p>Para instalar el servicio, utilizaremos el siguiente comando:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">apt-get install dnsmasq
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Una vez instalado el paquete, procederemos a levantar el servicio con el siguiente comando:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">systemctl start dnsmasq
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Con esto tenemos lista la parte de instalación y preparación del servicio.&lt;/p>
+&lt;h3 id="servidor-dns-caché">Servidor DNS Caché&lt;/h3>
+&lt;p>A continuación configuraremos el servidor para que el servidor dnsmasq pueda ser un servidor caché DNS. Para ello tendremos que modificar el archivo &amp;ldquo;/etc/resolv.conf&amp;rdquo;, donde especificaremos que servidores de DNS externos van a actuar en caso de que el propio servidor no tenga una respuesta. La configuración que utilizaremos será con los 2 servidores DNS de google, de forma que el archivo quede de la siguiente manera:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-bash" data-lang="bash">nameserver 8.8.8.8
+nameserver 8.8.4.4
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Una vez modificado este archivo, reiniciamos el servicio de la red con el comando:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-bash" data-lang="bash">systemctl restart networking
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Para comprobar su funcionamiento, vamos a ejecutar un comando de &amp;ldquo;nslookup&amp;rdquo; con una dirección de internet para comprobar que se resuelve y que servidor lo hace:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-bash" data-lang="bash">nslookup www.google.es
+Server: 8.8.8.8
+Address: 8.8.8.8#53
+Non-authoritative answer:
+Name: www.google.es
+Address: 142.250.184.163
+Name: www.google.es
+Address: 2a00:1450:4003:80c::2003
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Con esto la configuración del servidor está completada, ahora solo falta modificar el archivo &amp;ldquo;/etc/resolv.conf&amp;rdquo; del resto de los ordenadores de la red para que su servidor DNS sea el de dnsmasq. Para ello pondremos la siguiente configuración:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">nameserver 10.0.0.5
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>La ip seleccionada es la del servidor.&lt;/p>
+&lt;p>A continuación podemos probar a resolver nombres desde cualquier otra máquina, dándonos el siguiente resultado:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">nslookup www.iespabloserrano.com
+Server: 10.0.0.5
+Address: 10.0.0.5#53
+Non-authoritative answer:
+Name: www.iespabloserrano.com
+Address: 82.98.135.44
+&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="servidor-dns-maestro">Servidor DNS maestro&lt;/h3>
+&lt;p>Para realizar la configuración como un servidor maestro, vamos a tener que escribir los diferentes hosts dentro del archivo &amp;ldquo;/etc/hosts&amp;rdquo;, en el que escribiremos las siguientes entradas:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">10.0.0.5 dns.asir2.com
+10.0.0.2 pc01.asir2.com
+10.0.0.1 router.asir2.com
+10.0.1.1 router.asir2.com
+10.0.1.2 pc02.asir2.com
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Una vez guardado el archivo con los cambios, simplemente tendremos que reiniciar el servicio con el comando:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">systemctl restart dnsmasq
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Si ahora realizamos una consulta desde cualquier ordenador de la red, esto es lo que obtenemos:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">nslookup pc01.asir2.com
+Server: 10.0.0.5
+Address: 10.0.0.5#53
+Name: pc01.asir2.com
+Address: 10.0.0.2
+nslookup router.asir2.com
+Server: 10.0.0.5
+Address: 10.0.0.5#53
+Name: router.asir2.com
+Address: 10.0.1.1
+Name: router.asir2.com
+Address: 10.0.0.1
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="punto-4">Punto 4&lt;/h2>
+&lt;h3 id="configuración-dhcp-en-dnsmasq">Configuración DHCP en DNSMASQ&lt;/h3>
+&lt;p>Para poder utilizar nuestro servidor DNS dinámico como un servidor DHCP, lo que tenemos que hacer es configura varios archivos, siendo el primero el &amp;ldquo;/etc/dnsmasq.conf&amp;rdquo; para establecer nuestro rango de direcciones ip para el servicio DHCP.
+Lo único que tendremos que hacer será agregar la siguiente línea al archivo indicado:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sql" data-lang="sql">dhcp&lt;span style="color:#f92672">-&lt;/span>range&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">10&lt;/span>.&lt;span style="color:#ae81ff">0&lt;/span>.&lt;span style="color:#ae81ff">0&lt;/span>.&lt;span style="color:#ae81ff">10&lt;/span>,&lt;span style="color:#ae81ff">10&lt;/span>.&lt;span style="color:#ae81ff">0&lt;/span>.&lt;span style="color:#ae81ff">0&lt;/span>.&lt;span style="color:#ae81ff">100&lt;/span>,&lt;span style="color:#ae81ff">24&lt;/span>h
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Una vez configurado, reiniciamos el servicio y probamos a conectar un cliente, en este caso el pc01 que teníamos anteriormente en la misma red. Modificaremos su interfaz de red local para que obtenga dhcp, y tras el reinicio del servicio obtenemos el siguiente resultado:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">enp0s8: &amp;lt;BROADCAST,MULTICAST,UP,LOWER_UP&amp;gt; mtu &lt;span style="color:#ae81ff">1500&lt;/span> qdisc pfifo_fast state UP group default qlen &lt;span style="color:#ae81ff">1000&lt;/span>
+link/ether 08:00:27:c0:c8:27 brd ff:ff:ff:ff:ff:ff
+inet 10.0.0.68/24 brd 10.0.0.255 scope global secondary dynamic enp0s8
+valid_lft 86381sec preferred_lft 86381sec
+inet6 fe80::a00:27ff:fec0:c827/64 scope link
+valid_lft forever preferred_lft forever
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Como podemos observar, se nos ha concedido la ip 10.0.0.68, por un periodo de 86400 segundos, es decir, 24 horas tal y como se especificón en la configuración del servidor.
+Si accedemos al archivo &amp;ldquo;/var/lib/dhcp/dhclient.enp0s8.leases&amp;rdquo; nos mostrará todas las concesiones que se han realizado por el servidor dns, en este caso nos muestra lo siguiente:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">cat /var/lib/dhcp/dhclient.enp0s8.leases
+default-duid &lt;span style="color:#e6db74">&amp;#34;\000\001\000\001)\216\235\345\010\000&amp;#39;\300\310&amp;#39;&amp;#34;&lt;/span>;
+lease &lt;span style="color:#f92672">{&lt;/span>
+interface &lt;span style="color:#e6db74">&amp;#34;enp0s8&amp;#34;&lt;/span>;
+fixed-address 10.0.0.68;
+option subnet-mask 255.255.255.0;
+option routers 10.0.0.5;
+option dhcp-lease-time 86400;
+option dhcp-message-type 5;
+option domain-name-servers 10.0.0.5;
+option dhcp-server-identifier 10.0.0.5;
+option dhcp-renewal-time 43200;
+option broadcast-address 10.0.0.255;
+option dhcp-rebinding-time 75600;
+option host-name &lt;span style="color:#e6db74">&amp;#34;pc01&amp;#34;&lt;/span>;
+renew &lt;span style="color:#ae81ff">5&lt;/span> 2022/02/04 00:26:45;
+rebind &lt;span style="color:#ae81ff">5&lt;/span> 2022/02/04 11:07:29;
+expire &lt;span style="color:#ae81ff">5&lt;/span> 2022/02/04 14:07:29;
+&lt;span style="color:#f92672">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Si realizamos una ejecución del comando &amp;ldquo;nslookup&amp;rdquo; con el mismo nombre que tiene el nuevo ordenador, nos devolverá lo siguiente:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">nslookup pc01.asir2.com 10.0.0.5
+Server: 10.0.0.5
+Address: 10.0.0.5#53
+Name: pc01.asir2.com
+Address: 10.0.0.68
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Y si ejecutamos consultas desde el pc01, esto es lo que obtenemos:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">nslookup router.asir2.com
+Server: 10.0.0.5
+Address: 10.0.0.5#53
+Name: router.asir2.com
+Address: 10.0.1.1
+Name: router.asir2.com
+Address: 10.0.0.1
+&lt;/code>&lt;/pre>&lt;/div></content></item></channel></rss>

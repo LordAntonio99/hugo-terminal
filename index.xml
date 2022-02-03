@@ -773,4 +773,51 @@ Name: router.asir2.com
 Address: 10.0.1.1
 Name: router.asir2.com
 Address: 10.0.0.1
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="punto-4">Punto 4&lt;/h2>
+&lt;h3 id="configuración-dhcp-en-dnsmasq">Configuración DHCP en DNSMASQ&lt;/h3>
+&lt;p>Para poder utilizar nuestro servidor DNS dinámico como un servidor DHCP, lo que tenemos que hacer es configura varios archivos, siendo el primero el &amp;ldquo;/etc/dnsmasq.conf&amp;rdquo; para establecer nuestro rango de direcciones ip para el servicio DHCP.
+Lo único que tendremos que hacer será agregar la siguiente línea al archivo indicado:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sql" data-lang="sql">dhcp&lt;span style="color:#f92672">-&lt;/span>range&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">10&lt;/span>.&lt;span style="color:#ae81ff">0&lt;/span>.&lt;span style="color:#ae81ff">0&lt;/span>.&lt;span style="color:#ae81ff">10&lt;/span>,&lt;span style="color:#ae81ff">10&lt;/span>.&lt;span style="color:#ae81ff">0&lt;/span>.&lt;span style="color:#ae81ff">0&lt;/span>.&lt;span style="color:#ae81ff">100&lt;/span>,&lt;span style="color:#ae81ff">24&lt;/span>h
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Una vez configurado, reiniciamos el servicio y probamos a conectar un cliente, en este caso el pc01 que teníamos anteriormente en la misma red. Modificaremos su interfaz de red local para que obtenga dhcp, y tras el reinicio del servicio obtenemos el siguiente resultado:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">enp0s8: &amp;lt;BROADCAST,MULTICAST,UP,LOWER_UP&amp;gt; mtu &lt;span style="color:#ae81ff">1500&lt;/span> qdisc pfifo_fast state UP group default qlen &lt;span style="color:#ae81ff">1000&lt;/span>
+link/ether 08:00:27:c0:c8:27 brd ff:ff:ff:ff:ff:ff
+inet 10.0.0.68/24 brd 10.0.0.255 scope global secondary dynamic enp0s8
+valid_lft 86381sec preferred_lft 86381sec
+inet6 fe80::a00:27ff:fec0:c827/64 scope link
+valid_lft forever preferred_lft forever
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Como podemos observar, se nos ha concedido la ip 10.0.0.68, por un periodo de 86400 segundos, es decir, 24 horas tal y como se especificón en la configuración del servidor.
+Si accedemos al archivo &amp;ldquo;/var/lib/dhcp/dhclient.enp0s8.leases&amp;rdquo; nos mostrará todas las concesiones que se han realizado por el servidor dns, en este caso nos muestra lo siguiente:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">cat /var/lib/dhcp/dhclient.enp0s8.leases
+default-duid &lt;span style="color:#e6db74">&amp;#34;\000\001\000\001)\216\235\345\010\000&amp;#39;\300\310&amp;#39;&amp;#34;&lt;/span>;
+lease &lt;span style="color:#f92672">{&lt;/span>
+interface &lt;span style="color:#e6db74">&amp;#34;enp0s8&amp;#34;&lt;/span>;
+fixed-address 10.0.0.68;
+option subnet-mask 255.255.255.0;
+option routers 10.0.0.5;
+option dhcp-lease-time 86400;
+option dhcp-message-type 5;
+option domain-name-servers 10.0.0.5;
+option dhcp-server-identifier 10.0.0.5;
+option dhcp-renewal-time 43200;
+option broadcast-address 10.0.0.255;
+option dhcp-rebinding-time 75600;
+option host-name &lt;span style="color:#e6db74">&amp;#34;pc01&amp;#34;&lt;/span>;
+renew &lt;span style="color:#ae81ff">5&lt;/span> 2022/02/04 00:26:45;
+rebind &lt;span style="color:#ae81ff">5&lt;/span> 2022/02/04 11:07:29;
+expire &lt;span style="color:#ae81ff">5&lt;/span> 2022/02/04 14:07:29;
+&lt;span style="color:#f92672">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Si realizamos una ejecución del comando &amp;ldquo;nslookup&amp;rdquo; con el mismo nombre que tiene el nuevo ordenador, nos devolverá lo siguiente:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">nslookup pc01.asir2.com 10.0.0.5
+Server: 10.0.0.5
+Address: 10.0.0.5#53
+Name: pc01.asir2.com
+Address: 10.0.0.68
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Y si ejecutamos consultas desde el pc01, esto es lo que obtenemos:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">nslookup router.asir2.com
+Server: 10.0.0.5
+Address: 10.0.0.5#53
+Name: router.asir2.com
+Address: 10.0.1.1
+Name: router.asir2.com
+Address: 10.0.0.1
 &lt;/code>&lt;/pre>&lt;/div></content></item></channel></rss>

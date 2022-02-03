@@ -3,7 +3,7 @@
 <title>Trabajo de servidores DNS :: La web de Antonio</title>
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=description content="Contenidos  Servidor de DNS en Linux  Configuración inicial Instalación del servicio Punto 1  A. Creación del una zona para el dominio B. Crear una zona de resolución inversa C. Nombres FQHN D. Servidor web y ftp   Punto 2  A. Configuración de las zonas B. Reiniciar los servidores C. Modificar el numero de registro D. Transferencias completas: E. Consultas con dig F. Configura un cliente para que utilice los 2 servidores   Punto 3  Instalación   Servidor DNS Caché Servidor DNS maestro    Servidor de DNS en Linux Configuración inicial    PC Interfaz Red Dirección     PC01 enp0s3 NAT 10.">
+<meta name=description content="Trabajo completo de DNS">
 <meta name=keywords content=",">
 <meta name=robots content="noodp">
 <link rel=canonical href=https://lordantonio99.github.io/hugo-terminal/posts/servidordnsmasq/>
@@ -17,7 +17,7 @@
 <meta property="og:locale" content="en">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Trabajo de servidores DNS">
-<meta property="og:description" content="Contenidos  Servidor de DNS en Linux  Configuración inicial Instalación del servicio Punto 1  A. Creación del una zona para el dominio B. Crear una zona de resolución inversa C. Nombres FQHN D. Servidor web y ftp   Punto 2  A. Configuración de las zonas B. Reiniciar los servidores C. Modificar el numero de registro D. Transferencias completas: E. Consultas con dig F. Configura un cliente para que utilice los 2 servidores   Punto 3  Instalación   Servidor DNS Caché Servidor DNS maestro    Servidor de DNS en Linux Configuración inicial    PC Interfaz Red Dirección     PC01 enp0s3 NAT 10.">
+<meta property="og:description" content="Trabajo completo de DNS">
 <meta property="og:url" content="https://lordantonio99.github.io/hugo-terminal/posts/servidordnsmasq/">
 <meta property="og:site_name" content="La web de Antonio">
 <meta property="og:image" content="https://lordantonio99.github.io/hugo-terminal/">
@@ -57,10 +57,11 @@ Antonio
 <span class=post-date>
 2022-02-03
 </span>
+<span class=post-reading-time>:: 13 min read (2624 words)</span>
 </div>
 <span class=post-tags>
-#<a href=https://lordantonio99.github.io/hugo-terminal/tags/></a>&nbsp;
-#<a href=https://lordantonio99.github.io/hugo-terminal/tags/></a>&nbsp;
+#<a href=https://lordantonio99.github.io/hugo-terminal/tags/redes/>redes</a>&nbsp;
+#<a href=https://lordantonio99.github.io/hugo-terminal/tags/dns/>dns</a>&nbsp;
 </span>
 <div class=post-content><div>
 <h1 id=contenidos>Contenidos<a href=#contenidos class=hanchor arialabel=Anchor>&#8983;</a> </h1>
@@ -617,6 +618,55 @@ Address: 10.0.0.2
 
 
 nslookup router.asir2.com
+Server:         10.0.0.5
+Address:        10.0.0.5#53
+
+Name:   router.asir2.com
+Address: 10.0.1.1
+Name:   router.asir2.com
+Address: 10.0.0.1
+</code></pre></div><h2 id=punto-4>Punto 4<a href=#punto-4 class=hanchor arialabel=Anchor>&#8983;</a> </h2>
+<h3 id=configuración-dhcp-en-dnsmasq>Configuración DHCP en DNSMASQ<a href=#configuración-dhcp-en-dnsmasq class=hanchor arialabel=Anchor>&#8983;</a> </h3>
+<p>Para poder utilizar nuestro servidor DNS dinámico como un servidor DHCP, lo que tenemos que hacer es configura varios archivos, siendo el primero el &ldquo;/etc/dnsmasq.conf&rdquo; para establecer nuestro rango de direcciones ip para el servicio DHCP.
+Lo único que tendremos que hacer será agregar la siguiente línea al archivo indicado:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql>dhcp<span style=color:#f92672>-</span>range<span style=color:#f92672>=</span><span style=color:#ae81ff>10</span>.<span style=color:#ae81ff>0</span>.<span style=color:#ae81ff>0</span>.<span style=color:#ae81ff>10</span>,<span style=color:#ae81ff>10</span>.<span style=color:#ae81ff>0</span>.<span style=color:#ae81ff>0</span>.<span style=color:#ae81ff>100</span>,<span style=color:#ae81ff>24</span>h
+</code></pre></div><p>Una vez configurado, reiniciamos el servicio y probamos a conectar un cliente, en este caso el pc01 que teníamos anteriormente en la misma red. Modificaremos su interfaz de red local para que obtenga dhcp, y tras el reinicio del servicio obtenemos el siguiente resultado:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>enp0s8: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu <span style=color:#ae81ff>1500</span> qdisc pfifo_fast state UP group default qlen <span style=color:#ae81ff>1000</span>
+link/ether 08:00:27:c0:c8:27 brd ff:ff:ff:ff:ff:ff
+inet 10.0.0.68/24 brd 10.0.0.255 scope global secondary dynamic enp0s8
+    valid_lft 86381sec preferred_lft 86381sec
+inet6 fe80::a00:27ff:fec0:c827/64 scope link 
+valid_lft forever preferred_lft forever
+</code></pre></div><p>Como podemos observar, se nos ha concedido la ip 10.0.0.68, por un periodo de 86400 segundos, es decir, 24 horas tal y como se especificón en la configuración del servidor.
+Si accedemos al archivo &ldquo;/var/lib/dhcp/dhclient.enp0s8.leases&rdquo; nos mostrará todas las concesiones que se han realizado por el servidor dns, en este caso nos muestra lo siguiente:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>cat /var/lib/dhcp/dhclient.enp0s8.leases 
+default-duid <span style=color:#e6db74>&#34;\000\001\000\001)\216\235\345\010\000&#39;\300\310&#39;&#34;</span>;
+lease <span style=color:#f92672>{</span>
+  interface <span style=color:#e6db74>&#34;enp0s8&#34;</span>;
+  fixed-address 10.0.0.68;
+  option subnet-mask 255.255.255.0;
+  option routers 10.0.0.5;
+  option dhcp-lease-time 86400;
+  option dhcp-message-type 5;
+  option domain-name-servers 10.0.0.5;
+  option dhcp-server-identifier 10.0.0.5;
+  option dhcp-renewal-time 43200;
+  option broadcast-address 10.0.0.255;
+  option dhcp-rebinding-time 75600;
+  option host-name <span style=color:#e6db74>&#34;pc01&#34;</span>;
+  renew <span style=color:#ae81ff>5</span> 2022/02/04 00:26:45;
+  rebind <span style=color:#ae81ff>5</span> 2022/02/04 11:07:29;
+  expire <span style=color:#ae81ff>5</span> 2022/02/04 14:07:29;
+<span style=color:#f92672>}</span>
+</code></pre></div><p>Si realizamos una ejecución del comando &ldquo;nslookup&rdquo; con el mismo nombre que tiene el nuevo ordenador, nos devolverá lo siguiente:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>nslookup pc01.asir2.com 10.0.0.5
+Server:         10.0.0.5
+Address:        10.0.0.5#53
+
+Name:   pc01.asir2.com
+Address: 10.0.0.68
+</code></pre></div><p>Y si ejecutamos consultas desde el pc01, esto es lo que obtenemos:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>nslookup router.asir2.com
 Server:         10.0.0.5
 Address:        10.0.0.5#53
 
