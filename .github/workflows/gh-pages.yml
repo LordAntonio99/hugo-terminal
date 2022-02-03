@@ -1,0 +1,34 @@
+# Nombre de la acción
+name: GoHugo Builds
+
+# Definir el trigger de push a la rama donde se creará la web
+on:
+  push:
+    branches:
+      - main
+
+# Definir las acciones que realizará
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      with:
+        submodules: true
+        fetch-depth: 0
+
+      - name : Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: 'latest'
+        
+      - name: Build
+        run: hugo --minify
+
+      - name: Deploy
+        uses: peaceiris/actions-hugo@v2
+        if: github.ref == 'refs/heads/main'
+        with: 
+          github_token: ${{ secrets.TOKEN }}
+          publish_dir: ./public
+        
