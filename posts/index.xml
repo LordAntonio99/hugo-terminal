@@ -726,7 +726,7 @@ nameserver 10.0.0.4
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>Una vez instalado el paquete, procederemos a levantar el servicio con el siguiente comando:&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">systemctl start dnsmasq
 &lt;/code>&lt;/pre>&lt;/div>&lt;p>Con esto tenemos lista la parte de instalación y preparación del servicio.&lt;/p>
-&lt;h2 id="servidor-dns-caché">Servidor DNS Caché&lt;/h2>
+&lt;h3 id="servidor-dns-caché">Servidor DNS Caché&lt;/h3>
 &lt;p>A continuación configuraremos el servidor para que el servidor dnsmasq pueda ser un servidor caché DNS. Para ello tendremos que modificar el archivo &amp;ldquo;/etc/resolv.conf&amp;rdquo;, donde especificaremos que servidores de DNS externos van a actuar en caso de que el propio servidor no tenga una respuesta. La configuración que utilizaremos será con los 2 servidores DNS de google, de forma que el archivo quede de la siguiente manera:&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-bash" data-lang="bash">nameserver 8.8.8.8
 nameserver 8.8.4.4
@@ -751,7 +751,7 @@ Address: 10.0.0.5#53
 Non-authoritative answer:
 Name: www.iespabloserrano.com
 Address: 82.98.135.44
-&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="servidor-dns-maestro">Servidor DNS maestro&lt;/h2>
+&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="servidor-dns-maestro">Servidor DNS maestro&lt;/h3>
 &lt;p>Para realizar la configuración como un servidor maestro, vamos a tener que escribir los diferentes hosts dentro del archivo &amp;ldquo;/etc/hosts&amp;rdquo;, en el que escribiremos las siguientes entradas:&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">10.0.0.5 dns.asir2.com
 10.0.0.2 pc01.asir2.com
