@@ -37,4 +37,4 @@ Es la más comun para acceder a redes de Internet desde una red privada. Un disp
 #### DNAT
 Se utiliza para exponer un servicio que está en una ip privada. Un dispositivo NAT modifica la ip pública de una petición para un servicio, asignandole una ip privada de dentro del servidor.
 ## Esquema de red
-![](/img/esquemaiptables.png)
+![Esquema de red](/hugo-terminal/img/esquemaiptables.png)
