@@ -11,6 +11,11 @@ showFullContent = false
 readingTime = false
 +++
 
+# Contenidos
+- [Instalación](#instalación)
+- [Servidor DNS Caché](#servidor-dns-caché)
+- [Servidor DNS maestro](#servidor-dns-maestro)
+
 ## Instalación
 
 Para instalar el servicio, utilizaremos el siguiente comando:
