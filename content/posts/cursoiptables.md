@@ -139,4 +139,9 @@ iptables -t nat -A POSTROUTING -s 192.168.100.0/24 -o enp0s3 -j MASQUERADE
 #DNAT
 iptables -t nat -A PREROUTING -i enp0s8 -p tcp --dport 80 -j DNAT --to 192.168.200.2
 ```
+## Crear un script para iptables
+```shell
+touch /etc/network/if-up.d/iptables.sh
+chmod +x /etc/network/if-up.d/iptables.sh
+```
 
