@@ -99,7 +99,7 @@ El paquete de iptables proporciona algunas funcionalidades extra que no tienen l
 <p>Se utiliza para exponer un servicio que está en una ip privada. Un dispositivo NAT modifica la ip pública de una petición para un servicio, asignandole una ip privada de dentro del servidor.</p>
 <h2 id=esquema-de-red>Esquema de red<a href=#esquema-de-red class=hanchor arialabel=Anchor>&#8983;</a> </h2>
 <p><img src=/hugo-terminal/img/esquemaiptables.png alt="Esquema de red">
-Puedes descargar la OVA para VirtualBox <a href>aqui</a></p>
+Puedes descargar la OVA para VirtualBox <a href="https://drive.google.com/file/d/1cG1Vcl5aioI28A_fGbzV8-pcCXI5PRYv/view?usp=sharing">aqui</a></p>
 <h2 id=tipos-de-tráfico>Tipos de tráfico<a href=#tipos-de-tráfico class=hanchor arialabel=Anchor>&#8983;</a> </h2>
 <ul>
 <li>Entrante: tráfico entrante con destino al equipo</li>
@@ -133,6 +133,10 @@ Puedes descargar la OVA para VirtualBox <a href>aqui</a></p>
 <li>Paquete originado en el equipo que sale: OUTPUT de nat, OUTPUT de filter y POSTROUTING de nat.</li>
 <li>Paquete que atraviesa el equipo: PREROUTING de nat, FORWARD de filter y POSTROUTING de nat.</li>
 </ul>
+<h2 id=sintaxis>Sintaxis<a href=#sintaxis class=hanchor arialabel=Anchor>&#8983;</a> </h2>
+<h3 id=políticas>Políticas<a href=#políticas class=hanchor arialabel=Anchor>&#8983;</a> </h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>iptables <span style=color:#f92672>[</span>-t TABLA<span style=color:#f92672>]</span> -P <span style=color:#f92672>[</span>CADENA<span style=color:#f92672>]</span> ACCEPT|DROP
+</code></pre></div>
 </div></div>
 <div class=pagination>
 <div class=pagination__title>

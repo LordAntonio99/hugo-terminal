@@ -31,7 +31,7 @@ El paquete de iptables proporciona algunas funcionalidades extra que no tienen l
 &lt;p>Se utiliza para exponer un servicio que está en una ip privada. Un dispositivo NAT modifica la ip pública de una petición para un servicio, asignandole una ip privada de dentro del servidor.&lt;/p>
 &lt;h2 id="esquema-de-red">Esquema de red&lt;/h2>
 &lt;p>&lt;img src="https://lordantonio99.github.io/hugo-terminal/hugo-terminal/img/esquemaiptables.png" alt="Esquema de red">
-Puedes descargar la OVA para VirtualBox &lt;a href="">aqui&lt;/a>&lt;/p>
+Puedes descargar la OVA para VirtualBox &lt;a href="https://drive.google.com/file/d/1cG1Vcl5aioI28A_fGbzV8-pcCXI5PRYv/view?usp=sharing">aqui&lt;/a>&lt;/p>
 &lt;h2 id="tipos-de-tráfico">Tipos de tráfico&lt;/h2>
 &lt;ul>
 &lt;li>Entrante: tráfico entrante con destino al equipo&lt;/li>
@@ -64,7 +64,11 @@ Puedes descargar la OVA para VirtualBox &lt;a href="">aqui&lt;/a>&lt;/p>
 &lt;li>Paquete del exterior con destino el equipo: PREROUTING de nat e INPUT de filter.&lt;/li>
 &lt;li>Paquete originado en el equipo que sale: OUTPUT de nat, OUTPUT de filter y POSTROUTING de nat.&lt;/li>
 &lt;li>Paquete que atraviesa el equipo: PREROUTING de nat, FORWARD de filter y POSTROUTING de nat.&lt;/li>
-&lt;/ul></content></item><item><title>Servidores DHCP Teoría</title><link>https://lordantonio99.github.io/hugo-terminal/posts/servidoresdhcp/</link><pubDate>Thu, 03 Feb 2022 13:43:56 +0100</pubDate><guid>https://lordantonio99.github.io/hugo-terminal/posts/servidoresdhcp/</guid><description>Servidores DHCP Introducción DHCP es un protocolo de configuración dinámica de hosts, con el que asignamos Ips dentro de un rango que establecemos.
+&lt;/ul>
+&lt;h2 id="sintaxis">Sintaxis&lt;/h2>
+&lt;h3 id="políticas">Políticas&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">iptables &lt;span style="color:#f92672">[&lt;/span>-t TABLA&lt;span style="color:#f92672">]&lt;/span> -P &lt;span style="color:#f92672">[&lt;/span>CADENA&lt;span style="color:#f92672">]&lt;/span> ACCEPT|DROP
+&lt;/code>&lt;/pre>&lt;/div></content></item><item><title>Servidores DHCP Teoría</title><link>https://lordantonio99.github.io/hugo-terminal/posts/servidoresdhcp/</link><pubDate>Thu, 03 Feb 2022 13:43:56 +0100</pubDate><guid>https://lordantonio99.github.io/hugo-terminal/posts/servidoresdhcp/</guid><description>Servidores DHCP Introducción DHCP es un protocolo de configuración dinámica de hosts, con el que asignamos Ips dentro de un rango que establecemos.
 Su principal función es que los dispositivos de una red obtengan su configuración de internet de forma automática.
 Los hosts que proporcionan servicios de red no deberían usar esta configuración, ya que dependen de ella y pueden desconectarse o causar errores.
 Componentes de un servidor DHCP Sus componentes son:</description><content>&lt;h1 id="servidores-dhcp">Servidores DHCP&lt;/h1>
