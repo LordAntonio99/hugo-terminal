@@ -77,3 +77,34 @@ Address: 82.98.135.44
 ```
 
 ## Servidor DNS maestro
+Para realizar la configuración como un servidor maestro, vamos a tener que escribir los diferentes hosts dentro del archivo "/etc/hosts", en el que escribiremos las siguientes entradas:
+```shell
+10.0.0.5        dns.asir2.com
+10.0.0.2        pc01.asir2.com
+10.0.0.1        router.asir2.com
+10.0.1.1        router.asir2.com
+10.0.1.2        pc02.asir2.com
+```
+Una vez guardado el archivo con los cambios, simplemente tendremos que reiniciar el servicio con el comando:
+```shell
+systemctl restart dnsmasq
+```
+Si ahora realizamos una consulta desde cualquier ordenador de la red, esto es lo que obtenemos:
+```shell
+nslookup pc01.asir2.com
+Server:         10.0.0.5
+Address:        10.0.0.5#53
+
+Name:   pc01.asir2.com
+Address: 10.0.0.2
+
+
+nslookup router.asir2.com
+Server:         10.0.0.5
+Address:        10.0.0.5#53
+
+Name:   router.asir2.com
+Address: 10.0.1.1
+Name:   router.asir2.com
+Address: 10.0.0.1
+```
