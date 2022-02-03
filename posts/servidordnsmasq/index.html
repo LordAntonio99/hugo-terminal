@@ -103,6 +103,32 @@ Non-authoritative answer:
 Name:   www.iespabloserrano.com
 Address: 82.98.135.44
 </code></pre></div><h2 id=servidor-dns-maestro>Servidor DNS maestro<a href=#servidor-dns-maestro class=hanchor arialabel=Anchor>&#8983;</a> </h2>
+<p>Para realizar la configuración como un servidor maestro, vamos a tener que escribir los diferentes hosts dentro del archivo &ldquo;/etc/hosts&rdquo;, en el que escribiremos las siguientes entradas:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>10.0.0.5        dns.asir2.com
+10.0.0.2        pc01.asir2.com
+10.0.0.1        router.asir2.com
+10.0.1.1        router.asir2.com
+10.0.1.2        pc02.asir2.com
+</code></pre></div><p>Una vez guardado el archivo con los cambios, simplemente tendremos que reiniciar el servicio con el comando:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>systemctl restart dnsmasq
+</code></pre></div><p>Si ahora realizamos una consulta desde cualquier ordenador de la red, esto es lo que obtenemos:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>nslookup pc01.asir2.com
+Server:         10.0.0.5
+Address:        10.0.0.5#53
+
+Name:   pc01.asir2.com
+Address: 10.0.0.2
+
+
+nslookup router.asir2.com
+Server:         10.0.0.5
+Address:        10.0.0.5#53
+
+Name:   router.asir2.com
+Address: 10.0.1.1
+Name:   router.asir2.com
+Address: 10.0.0.1
+</code></pre></div>
 </div></div>
 <div class=pagination>
 <div class=pagination__title>
