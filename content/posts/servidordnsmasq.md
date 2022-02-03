@@ -502,7 +502,7 @@ systemctl start dnsmasq
 
 Con esto tenemos lista la parte de instalación y preparación del servicio.
 
-## Servidor DNS Caché
+### Servidor DNS Caché
 
 A continuación configuraremos el servidor para que el servidor dnsmasq pueda ser un servidor caché DNS. Para ello tendremos que modificar el archivo "/etc/resolv.conf", donde especificaremos que servidores de DNS externos van a actuar en caso de que el propio servidor no tenga una respuesta. La configuración que utilizaremos será con los 2 servidores DNS de google, de forma que el archivo quede de la siguiente manera:
 
@@ -551,7 +551,7 @@ Name:   www.iespabloserrano.com
 Address: 82.98.135.44
 ```
 
-## Servidor DNS maestro
+### Servidor DNS maestro
 Para realizar la configuración como un servidor maestro, vamos a tener que escribir los diferentes hosts dentro del archivo "/etc/hosts", en el que escribiremos las siguientes entradas:
 ```shell
 10.0.0.5        dns.asir2.com
