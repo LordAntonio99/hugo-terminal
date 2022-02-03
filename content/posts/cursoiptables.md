@@ -68,3 +68,23 @@ Puedes descargar la OVA para VirtualBox [aqui](https://drive.google.com/file/d/1
 ```shell
 iptables [-t TABLA] -P [CADENA] ACCEPT|DROP
 ```
+### Listar reglas
+```shell
+iptables -L [CADENA] [-n] [-v] [--line-numbers]
+iptables -S [CADENA] [-v]
+```
+### Añadir reglas
+```shell
+iptables -A [CADENA] [-p PROTOCOLO] [-s IP ORIGEN] [-d IP DESTINO] [-i INTERFAZ ENTRADA] [-o INTERFAZ SALIDA] [-j ACCEPT|DROP] #Inserta al final
+iptables -I [CADENA] [-p PROTOCOLO] [-s IP ORIGEN] [-d IP DESTINO] [-i INTERFAZ ENTRADA] [-o INTERFAZ SALIDA] [-j ACCEPT|DROP] #Inserta al principio
+```
+### Borrar reglas
+```shell
+iptables -C [CADENA] [-p PROTOCOLO] [-s IP ORIGEN] [-d IP DESTINO] [-i INTERFAZ ENTRADA] [-o INTERFAZ SALIDA] [-j ACCEPT|DROP] #Comprueba si la regla existe
+iptables -D [CADENA] [-p PROTOCOLO] [-s IP ORIGEN] [-d IP DESTINO] [-i INTERFAZ ENTRADA] [-o INTERFAZ SALIDA] [-j ACCEPT|DROP] #Borra una regla
+```
+### Limpiar
+```shell
+iptables -F [CADENA] # Borra todas las reglas
+iptables -Z #Pone los contadores a 0
+```
