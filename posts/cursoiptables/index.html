@@ -3,8 +3,8 @@
 <title>Curso completo de iptables :: La web de Antonio</title>
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=description content="Contenidos Filtrado de paquetes Se pueden realizar filtrados en base a diferentes capas del modelo TCP/IP. Sirven para poder controlar el tipo de tráfico que hay en nuestra red, permitir y denegar tráfico, y analizarlo.
-iptables Puede trabajar con ip6tables, ebtables y arptables. Es el proyecto más utilizado y no se desarrollan ya nuevas funcionalidades. El proyecto nftables esta desarrollado por los creadores de iptables, y es el sucesor de iptables, ip6tables, arptables y ebtables.">
+<meta name=description content="Contenidos  &amp;ldquo;Filtrado de paquetes&amp;rdquo;  &amp;ldquo;iptables&amp;rdquo; &amp;ldquo;firewalls&amp;rdquo; &amp;ldquo;NAT&amp;rdquo;  &amp;ldquo;SNAT&amp;rdquo; &amp;ldquo;DNAT&amp;rdquo;      Filtrado de paquetes Se pueden realizar filtrados en base a diferentes capas del modelo TCP/IP. Sirven para poder controlar el tipo de tráfico que hay en nuestra red, permitir y denegar tráfico, y analizarlo.
+iptables Puede trabajar con ip6tables, ebtables y arptables. Es el proyecto más utilizado y no se desarrollan ya nuevas funcionalidades.">
 <meta name=keywords content=",">
 <meta name=robots content="noodp">
 <link rel=canonical href=https://lordantonio99.github.io/hugo-terminal/posts/cursoiptables/>
@@ -18,8 +18,8 @@ iptables Puede trabajar con ip6tables, ebtables y arptables. Es el proyecto más
 <meta property="og:locale" content="en">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Curso completo de iptables">
-<meta property="og:description" content="Contenidos Filtrado de paquetes Se pueden realizar filtrados en base a diferentes capas del modelo TCP/IP. Sirven para poder controlar el tipo de tráfico que hay en nuestra red, permitir y denegar tráfico, y analizarlo.
-iptables Puede trabajar con ip6tables, ebtables y arptables. Es el proyecto más utilizado y no se desarrollan ya nuevas funcionalidades. El proyecto nftables esta desarrollado por los creadores de iptables, y es el sucesor de iptables, ip6tables, arptables y ebtables.">
+<meta property="og:description" content="Contenidos  &amp;ldquo;Filtrado de paquetes&amp;rdquo;  &amp;ldquo;iptables&amp;rdquo; &amp;ldquo;firewalls&amp;rdquo; &amp;ldquo;NAT&amp;rdquo;  &amp;ldquo;SNAT&amp;rdquo; &amp;ldquo;DNAT&amp;rdquo;      Filtrado de paquetes Se pueden realizar filtrados en base a diferentes capas del modelo TCP/IP. Sirven para poder controlar el tipo de tráfico que hay en nuestra red, permitir y denegar tráfico, y analizarlo.
+iptables Puede trabajar con ip6tables, ebtables y arptables. Es el proyecto más utilizado y no se desarrollan ya nuevas funcionalidades.">
 <meta property="og:url" content="https://lordantonio99.github.io/hugo-terminal/posts/cursoiptables/">
 <meta property="og:site_name" content="La web de Antonio">
 <meta property="og:image" content="https://lordantonio99.github.io/hugo-terminal/">
@@ -68,6 +68,20 @@ Antonio
 </span>
 <div class=post-content><div>
 <h1 id=contenidos>Contenidos<a href=#contenidos class=hanchor arialabel=Anchor>&#8983;</a> </h1>
+<ul>
+<li><a href=#filtrado-de-paquetes>&ldquo;Filtrado de paquetes&rdquo;</a>
+<ul>
+<li><a href=#iptables>&ldquo;iptables&rdquo;</a></li>
+<li><a href=#firewalls>&ldquo;firewalls&rdquo;</a></li>
+<li><a href=#nat>&ldquo;NAT&rdquo;</a>
+<ul>
+<li><a href=#snat>&ldquo;SNAT&rdquo;</a></li>
+<li><a href=#dnat>&ldquo;DNAT&rdquo;</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 <h2 id=filtrado-de-paquetes>Filtrado de paquetes<a href=#filtrado-de-paquetes class=hanchor arialabel=Anchor>&#8983;</a> </h2>
 <p>Se pueden realizar filtrados en base a diferentes capas del modelo TCP/IP. Sirven para poder controlar el tipo de tráfico que hay en nuestra red, permitir y denegar tráfico, y analizarlo.</p>
 <h3 id=iptables>iptables<a href=#iptables class=hanchor arialabel=Anchor>&#8983;</a> </h3>
@@ -82,6 +96,10 @@ El paquete de iptables proporciona algunas funcionalidades extra que no tienen l
 <li>Un equipo con dirección privada que quiere salir a internet (SNAT)</li>
 <li>Un equipo que quiere acceder a un servicio ubicado en una dirección privada (DNAT)</li>
 </ul>
+<h4 id=snat>SNAT<a href=#snat class=hanchor arialabel=Anchor>&#8983;</a> </h4>
+<p>Es la más comun para acceder a redes de Internet desde una red privada. Un dispositivo de NAT modifica la ip privada de origen por una ip pública. Puede utilizarse también entre redes privadas para no generar demasiadas reglas estáticas.</p>
+<h4 id=dnat>DNAT<a href=#dnat class=hanchor arialabel=Anchor>&#8983;</a> </h4>
+<p>Se utiliza para exponer un servicio que está en una ip privada. Un dispositivo NAT modifica la ip pública de una petición para un servicio, asignandole una ip privada de dentro del servidor.</p>
 </div></div>
 <div class=pagination>
 <div class=pagination__title>
