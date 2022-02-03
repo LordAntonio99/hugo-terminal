@@ -1,0 +1,110 @@
+<!doctype html><html lang=en>
+<head>
+<title>Servidordnsmasq :: My New Hugo Site</title>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="## Instalación
+Para instalar el servicio, utilizaremos el siguiente comando:
+apt-get install dnsmasq Una vez instalado el paquete, procederemos a levantar el servicio con el siguiente comando:
+systemctl start dnsmasq Con esto tenemos lista la parte de instalación y preparación del servicio.
+Servidor DNS Caché A continuación configuraremos el servidor para que el servidor dnsmasq pueda ser un servidor caché DNS. Para ello tendremos que modificar el archivo &amp;ldquo;/etc/resolv.conf&amp;rdquo;, donde especificaremos que servidores de DNS externos van a actuar en caso de que el propio servidor no tenga una respuesta.">
+<meta name=keywords content=",">
+<meta name=robots content="noodp">
+<link rel=canonical href=https://lordantonio99.github.io/web-hugo/posts/servidordnsmasq/>
+<link rel=stylesheet href=https://lordantonio99.github.io/web-hugo/assets/style.css>
+<link rel=stylesheet href=assets/%25!s%28%3cnil%3e%29.css>
+<link rel=apple-touch-icon href=https://lordantonio99.github.io/web-hugo/img/apple-touch-icon-192x192.png>
+<link rel="shortcut icon" href=https://lordantonio99.github.io/web-hugo/img/favicon/orange.png>
+<meta name=twitter:card content="summary">
+<meta property="og:locale" content="en">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Servidordnsmasq">
+<meta property="og:description" content="## Instalación
+Para instalar el servicio, utilizaremos el siguiente comando:
+apt-get install dnsmasq Una vez instalado el paquete, procederemos a levantar el servicio con el siguiente comando:
+systemctl start dnsmasq Con esto tenemos lista la parte de instalación y preparación del servicio.
+Servidor DNS Caché A continuación configuraremos el servidor para que el servidor dnsmasq pueda ser un servidor caché DNS. Para ello tendremos que modificar el archivo &amp;ldquo;/etc/resolv.conf&amp;rdquo;, donde especificaremos que servidores de DNS externos van a actuar en caso de que el propio servidor no tenga una respuesta.">
+<meta property="og:url" content="https://lordantonio99.github.io/web-hugo/posts/servidordnsmasq/">
+<meta property="og:site_name" content="My New Hugo Site">
+<meta property="og:image" content="https://lordantonio99.github.io/web-hugo/">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+<meta property="article:published_time" content="2022-02-03 13:16:32 +0100 +0100">
+</head>
+<body>
+<div class="container headings--one-size">
+<header class=header>
+<div class=header__inner>
+<div class=header__logo>
+<a href=https://lordantonio99.github.io/web-hugo/>
+<div class=logo>
+Terminal
+</div>
+</a>
+</div>
+</div>
+</header>
+<div class=content>
+<div class=post>
+<h1 class=post-title>
+<a href=https://lordantonio99.github.io/web-hugo/posts/servidordnsmasq/>Servidordnsmasq</a></h1>
+<div class=post-meta>
+<span class=post-date>
+2022-02-03
+</span>
+</div>
+<span class=post-tags>
+#<a href=https://lordantonio99.github.io/web-hugo/tags/></a>&nbsp;
+#<a href=https://lordantonio99.github.io/web-hugo/tags/></a>&nbsp;
+</span>
+<div class=post-content><div>
+<p>## Instalación</p>
+<p>Para instalar el servicio, utilizaremos el siguiente comando:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>apt-get install dnsmasq
+</code></pre></div><p>Una vez instalado el paquete, procederemos a levantar el servicio con el siguiente comando:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>systemctl start dnsmasq
+</code></pre></div><p>Con esto tenemos lista la parte de instalación y preparación del servicio.</p>
+<h2 id=servidor-dns-caché>Servidor DNS Caché<a href=#servidor-dns-caché class=hanchor arialabel=Anchor>&#8983;</a> </h2>
+<p>A continuación configuraremos el servidor para que el servidor dnsmasq pueda ser un servidor caché DNS. Para ello tendremos que modificar el archivo &ldquo;/etc/resolv.conf&rdquo;, donde especificaremos que servidores de DNS externos van a actuar en caso de que el propio servidor no tenga una respuesta. La configuración que utilizaremos será con los 2 servidores DNS de google, de forma que el archivo quede de la siguiente manera:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>nameserver 8.8.8.8
+nameserver 8.8.4.4
+</code></pre></div><p>Una vez modificado este archivo, reiniciamos el servicio de la red con el comando:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>systemctl restart networking
+</code></pre></div><p>Para comprobar su funcionamiento, vamos a ejecutar un comando de &ldquo;nslookup&rdquo; con una dirección de internet para comprobar que se resuelve y que servidor lo hace:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>nslookup www.google.es
+Server:         8.8.8.8
+Address:        8.8.8.8#53
+
+Non-authoritative answer:
+Name:   www.google.es
+Address: 142.250.184.163
+Name:   www.google.es
+Address: 2a00:1450:4003:80c::2003
+</code></pre></div><p>Con esto la configuración del servidor está completada, ahora solo falta modificar el archivo &ldquo;/etc/resolv.conf&rdquo; del resto de los ordenadores de la red para que su servidor DNS sea el de dnsmasq. Para ello pondremos la siguiente configuración:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>nameserver 10.0.0.5
+</code></pre></div><p>La ip seleccionada es la del servidor.</p>
+<p>A continuación podemos probar a resolver nombres desde cualquier otra máquina, dándonos el siguiente resultado:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>nslookup www.iespabloserrano.com
+Server:         10.0.0.5
+Address:        10.0.0.5#53
+
+Non-authoritative answer:
+Name:   www.iespabloserrano.com
+Address: 82.98.135.44
+</code></pre></div><h2 id=servidor-dns-maestro>Servidor DNS maestro<a href=#servidor-dns-maestro class=hanchor arialabel=Anchor>&#8983;</a> </h2>
+</div></div>
+</div>
+</div>
+<footer class=footer>
+<div class=footer__inner>
+<div class=copyright>
+<span>© 2022 Powered by <a href=http://gohugo.io>Hugo</a></span>
+<span>:: Theme made by <a href=https://twitter.com/panr>panr</a></span>
+</div>
+</div>
+</footer>
+<script src=https://lordantonio99.github.io/web-hugo/assets/main.js></script>
+<script src=https://lordantonio99.github.io/web-hugo/assets/prism.js></script>
+</div>
+</body>
+</html>
