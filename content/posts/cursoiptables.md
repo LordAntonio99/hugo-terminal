@@ -88,3 +88,16 @@ iptables -D [CADENA] [-p PROTOCOLO] [-s IP ORIGEN] [-d IP DESTINO] [-i INTERFAZ 
 iptables -F [CADENA] # Borra todas las reglas
 iptables -Z #Pone los contadores a 0
 ```
+
+**Ejemplo de reglas para iptables personales**
+```shell
+# HTTP
+iptables -A INPUT -i enp0s3 -p tcp --sport 80 -j ACCEPT
+iptables -A OUTPUT -o enp0s3 -p tcp --dport 80 -j ACCEPT
+# HTTPS
+iptables -A INPUT -i enp0s3 -p tcp --sport 443 -j ACCEPT
+iptables -A OUTPUT -o enp0s3 -p tcp --dport 443 -j ACCEPT
+# DNS
+iptables -A INPUT -i enp0s3 -p udp --sport 53 -j ACCEPT
+iptables -A OUTPUT -o enp0s3 -p udp --dport 53 -j ACCEPT
+```
