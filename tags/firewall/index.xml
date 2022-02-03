@@ -90,4 +90,24 @@ iptables -A OUTPUT -o enp0s3 -p tcp --dport &lt;span style="color:#ae81ff">443&l
 &lt;span style="color:#75715e"># DNS&lt;/span>
 iptables -A INPUT -i enp0s3 -p udp --sport &lt;span style="color:#ae81ff">53&lt;/span> -j ACCEPT
 iptables -A OUTPUT -o enp0s3 -p udp --dport &lt;span style="color:#ae81ff">53&lt;/span> -j ACCEPT
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="configuración-del-firewall-perimetral-1">Configuración del firewall perimetral 1&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-shell" data-lang="shell">&lt;span style="color:#75715e"># Activar en el router el reenvio de paquetes entre interfaces&lt;/span>
+echo &lt;span style="color:#ae81ff">1&lt;/span> &amp;gt; /proc/sys/net/ipv4/ip_forward
+&lt;span style="color:#75715e"># Borrar todas las reglas&lt;/span>
+iptables -F
+&lt;span style="color:#75715e"># Politicas por defecto en DROP&lt;/span>
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
+&lt;span style="color:#75715e"># Permitir el ping por la NAT&lt;/span>
+iptables -A OUTPUT -o enp0s3 -p icmp -j ACCEPT
+iptables -A INPUT -i enp0s3 -p icmp -j ACCEPT
+&lt;span style="color:#75715e"># Permitir el ping del servidor a las demas maquinas y viceversa&lt;/span>
+iptables -A OUTPUT -o enp0s8 -s 192.168.100.0/24 -p icmp -j ACCEPT
+iptables -A INPUT -i enp0s8 -s 192.168.100.0/24 -p icmp -j ACCEPT
+iptables -A OUTPUT -o enp0s9 -s 192.168.200.0/24 -p icmp -j ACCEPT
+iptables -A INPUT -i enp0s9 -s 192.168.200.0/24 -p icmp -j ACCEPT
+&lt;span style="color:#75715e"># Permitir el ping entre las máquinas&lt;/span>
+iptables -A FORWARD -i enp0s8 -o enp0s9 -p icmp -J ACCEPT
+iptables -A FORWARD -o enp0s8 -i enp0s9 -p icmp -J ACCEPT
 &lt;/code>&lt;/pre>&lt;/div></content></item></channel></rss>
