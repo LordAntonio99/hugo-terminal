@@ -4,11 +4,11 @@ date = "2022-02-03T13:16:32+01:00"
 author = ""
 authorTwitter = "" #do not include @
 cover = ""
-tags = ["", ""]
+tags = ["redes", "dns"]
 keywords = ["", ""]
-description = ""
+description = "Trabajo completo de DNS"
 showFullContent = false
-readingTime = false
+readingTime = true
 +++
 
 # Contenidos
@@ -574,6 +574,66 @@ Name:   pc01.asir2.com
 Address: 10.0.0.2
 
 
+nslookup router.asir2.com
+Server:         10.0.0.5
+Address:        10.0.0.5#53
+
+Name:   router.asir2.com
+Address: 10.0.1.1
+Name:   router.asir2.com
+Address: 10.0.0.1
+```
+
+## Punto 4
+### Configuración DHCP en DNSMASQ
+Para poder utilizar nuestro servidor DNS dinámico como un servidor DHCP, lo que tenemos que hacer es configura varios archivos, siendo el primero el "/etc/dnsmasq.conf" para establecer nuestro rango de direcciones ip para el servicio DHCP.
+Lo único que tendremos que hacer será agregar la siguiente línea al archivo indicado:
+```sql
+dhcp-range=10.0.0.10,10.0.0.100,24h
+```
+Una vez configurado, reiniciamos el servicio y probamos a conectar un cliente, en este caso el pc01 que teníamos anteriormente en la misma red. Modificaremos su interfaz de red local para que obtenga dhcp, y tras el reinicio del servicio obtenemos el siguiente resultado:
+```shell
+enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+link/ether 08:00:27:c0:c8:27 brd ff:ff:ff:ff:ff:ff
+inet 10.0.0.68/24 brd 10.0.0.255 scope global secondary dynamic enp0s8
+    valid_lft 86381sec preferred_lft 86381sec
+inet6 fe80::a00:27ff:fec0:c827/64 scope link 
+valid_lft forever preferred_lft forever
+```
+Como podemos observar, se nos ha concedido la ip 10.0.0.68, por un periodo de 86400 segundos, es decir, 24 horas tal y como se especificón en la configuración del servidor.
+Si accedemos al archivo "/var/lib/dhcp/dhclient.enp0s8.leases" nos mostrará todas las concesiones que se han realizado por el servidor dns, en este caso nos muestra lo siguiente:
+```shell
+cat /var/lib/dhcp/dhclient.enp0s8.leases 
+default-duid "\000\001\000\001)\216\235\345\010\000'\300\310'";
+lease {
+  interface "enp0s8";
+  fixed-address 10.0.0.68;
+  option subnet-mask 255.255.255.0;
+  option routers 10.0.0.5;
+  option dhcp-lease-time 86400;
+  option dhcp-message-type 5;
+  option domain-name-servers 10.0.0.5;
+  option dhcp-server-identifier 10.0.0.5;
+  option dhcp-renewal-time 43200;
+  option broadcast-address 10.0.0.255;
+  option dhcp-rebinding-time 75600;
+  option host-name "pc01";
+  renew 5 2022/02/04 00:26:45;
+  rebind 5 2022/02/04 11:07:29;
+  expire 5 2022/02/04 14:07:29;
+}
+```
+Si realizamos una ejecución del comando "nslookup" con el mismo nombre que tiene el nuevo ordenador, nos devolverá lo siguiente:
+```shell
+nslookup pc01.asir2.com 10.0.0.5
+Server:         10.0.0.5
+Address:        10.0.0.5#53
+
+Name:   pc01.asir2.com
+Address: 10.0.0.68
+```
+Y si ejecutamos consultas desde el pc01, esto es lo que obtenemos:
+```shell
 nslookup router.asir2.com
 Server:         10.0.0.5
 Address:        10.0.0.5#53
