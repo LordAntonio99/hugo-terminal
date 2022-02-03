@@ -38,7 +38,7 @@ Es la más comun para acceder a redes de Internet desde una red privada. Un disp
 Se utiliza para exponer un servicio que está en una ip privada. Un dispositivo NAT modifica la ip pública de una petición para un servicio, asignandole una ip privada de dentro del servidor.
 ## Esquema de red
 ![Esquema de red](/hugo-terminal/img/esquemaiptables.png)
-Puedes descargar la OVA para VirtualBox [aqui]()
+Puedes descargar la OVA para VirtualBox [aqui](https://drive.google.com/file/d/1cG1Vcl5aioI28A_fGbzV8-pcCXI5PRYv/view?usp=sharing)
 ## Tipos de tráfico
 - Entrante: tráfico entrante con destino al equipo
 - Salida: tráfico saliente con origen en el equipo
@@ -62,3 +62,9 @@ Puedes descargar la OVA para VirtualBox [aqui]()
 - Paquete del exterior con destino el equipo: PREROUTING de nat e INPUT de filter.
 - Paquete originado en el equipo que sale: OUTPUT de nat, OUTPUT de filter y POSTROUTING de nat.
 - Paquete que atraviesa el equipo: PREROUTING de nat, FORWARD de filter y POSTROUTING de nat.
+
+## Sintaxis
+### Políticas
+```shell
+iptables [-t TABLA] -P [CADENA] ACCEPT|DROP
+```
