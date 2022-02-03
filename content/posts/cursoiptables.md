@@ -12,12 +12,12 @@ readingTime = false
 +++
 
 # Contenidos
-1. [Filtrado de paquetes](#filtrado-de-paquetes)
-    1.1. [iptables](#iptables)
-    1.2. [firewalls](#firewalls)
-    1.3. [NAT](#nat)
-    1.4. [SNAT](#snat)
-    1.5. [DNAT](#dnat)
+- [Filtrado de paquetes](#filtrado-de-paquetes)
+    - [iptables](#iptables)
+    - [firewalls](#firewalls)
+    - [NAT](#nat)
+    - [SNAT](#snat)
+    - [DNAT](#dnat)
 
 
 ## Filtrado de paquetes
@@ -38,3 +38,18 @@ Es la más comun para acceder a redes de Internet desde una red privada. Un disp
 Se utiliza para exponer un servicio que está en una ip privada. Un dispositivo NAT modifica la ip pública de una petición para un servicio, asignandole una ip privada de dentro del servidor.
 ## Esquema de red
 ![Esquema de red](/hugo-terminal/img/esquemaiptables.png)
+Puedes descargar la OVA para VirtualBox [aqui]()
+## Tipos de tráfico
+- Entrante: tráfico entrante con destino al equipo
+- Salida: tráfico saliente con origen en el equipo
+- Paso: tráfico que atraviesa el equipo, entra por una interfaz y sale por otra
+## Tablas de iptables
+- filter: cortafuegos, es la tabla por defecto.
+- nat: para hacer NAT.
+- mangle: marcar y modificar paquetes.
+- raw: depurar seguimiento de conexión.
+- security: usadas para MAC.
+### Cadenas de filter
+- INPUT
+- OUTPUT
+- FORWARD
